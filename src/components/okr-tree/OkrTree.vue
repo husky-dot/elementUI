@@ -2,35 +2,54 @@
   <div class="org-chart-container">
     <div class="org-chart-node-children">
       <div class="org-chart-node">
-        <div class="org-chart-node-label">快乐学习有限公司</div>
+        <div class="org-chart-node-label">
+          <div class="org-chart-node-label-inner">快乐学习有限公司</div>
+        </div>
+        <div class="org-chart-node-btn">66666</div>
         <div class="org-chart-node-children">
           <div class="org-chart-node">
-            <div class="org-chart-node-label">职能部</div>
+            <div class="org-chart-node-label">
+              <div class="org-chart-node-label-inner">职能部</div>
+            </div>
           </div>
           <div class="org-chart-node">
-            <div class="org-chart-node-label">品牌部</div>
+            <div class="org-chart-node-label">
+              <div class="org-chart-node-label-inner">品牌部</div>
+            </div>
             <div class="org-chart-node-children">
               <div class="org-chart-node">
-                <div class="org-chart-node-label">UI设计</div>
+                <div class="org-chart-node-label">
+                  <div class="org-chart-node-label-inner">UI设计</div>
+                </div>
               </div>
               <div class="org-chart-node">
-                <div class="org-chart-node-label">活动策划</div>
+                <div class="org-chart-node-label">
+                  <div class="org-chart-node-label-inner">活动策划</div>
+                </div>
               </div>
             </div>
           </div>
           <div class="org-chart-node">
-            <div class="org-chart-node-label">事业部</div>
+            <div class="org-chart-node-label">
+              <div class="org-chart-node-label-inner">事业部</div>
+            </div>
             <div class="org-chart-node-children">
               <div class="org-chart-node">
-                <div class="org-chart-node-label">行政</div>
+                <div class="org-chart-node-label">
+                  <div class="org-chart-node-label-inner">行政</div>
+                </div>
               </div>
               <div class="org-chart-node">
-                <div class="org-chart-node-label">行政2</div>
+                <div class="org-chart-node-label">
+                  <div class="org-chart-node-label-inner">行政2</div>
+                </div>
               </div>
             </div>
           </div>
           <div class="org-chart-node">
-            <div class="org-chart-node-label">信息技术部</div>
+            <div class="org-chart-node-label">
+              <div class="org-chart-node-label-inner">信息技术部</div>
+            </div>
           </div>
         </div>
       </div>
@@ -120,7 +139,11 @@ export default {
   width: 0;
   height: 20px;
 }
-.org-chart-node-label {
+.org-chart-node-label{
+  position: relative;
+  display: inline-block;
+}
+.org-chart-node-label .org-chart-node-label-inner{
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
   display: inline-block;
   padding: 10px;

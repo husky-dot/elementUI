@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Vue2OrgTree :data='tree' horizontal collapsable />
+    <Vue2OrgTree :data='tree' collapsable/>
     <hr >
     <OkrTree />
   </div>
