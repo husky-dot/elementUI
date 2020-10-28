@@ -7,16 +7,16 @@
     <hr >
     <OkrTree />
     <hr>
-    <OkrTree2/>
+    <OkrTree3/>
   </div>
 </template>
 <script>
 import OkrTree from './okr-tree/OkrTree.vue'
-import OkrTree2 from './okr-tree/OkrTree2.vue'
+import OkrTree3 from './okr-tree/OkrTree3.vue'
 export default {
   components: {
     OkrTree,
-    OkrTree2
+    OkrTree3
   },
   data () {
     return {
