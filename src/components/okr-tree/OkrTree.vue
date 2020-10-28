@@ -123,7 +123,7 @@ export default {
 }
 /*将垂直连接器添加回最后的节点*/
 .org-chart-node:last-child::before{
-  border-right: 1px solid #ccc;
+  border-right: 1px solid red;
   border-radius: 0 5px 0 0;
 }
 .org-chart-node:first-child::after{
