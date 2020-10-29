@@ -14,7 +14,6 @@
         :label-height="labelHeight"
         :renderContent="renderContent"
         :label-class-name="labelClassName"
-           v-bind="$attrs"
       ></OkrTreeNode>
     </div>
   </div>
