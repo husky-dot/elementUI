@@ -2,7 +2,7 @@
   <div>
     <Vue2OrgTree :data='treeData' collapsable horizontal
       @on-expand="onExpand"
-      :renderContent='renderContent'
+      selectedKey="222"
     />
     <hr >
     <OkrTree :data="testData"
@@ -10,10 +10,15 @@
       showCollapsable
       @node-click='nodeClick'
       @node-btn-click='nodeBtnClick'
-      :renderContent='renderContent'
-    >ddddddd</OkrTree>
+      label-width="100px"
+      labelClassName='styleee'
+    ></OkrTree>
     <hr>
-    <!-- <OkrTree3/> -->
+    <OkrTree :data="testData"
+      showCollapsable
+      @node-click='nodeClick'
+      @node-btn-click='nodeBtnClick'
+    ></OkrTree>
   </div>
 </template>
 <script>
@@ -37,12 +42,12 @@ export default {
               {
                 id: 4,
                 label: "Patrick Estrela",
-                children: []
-              },
-              {
-                id: 5,
-                label: "Sandy Bochechas",
-                children: []
+                children: [
+                    {
+                      id: 222,
+                      label: '小44',
+                    }
+                  ]
               }
             ]
           },
@@ -55,40 +60,49 @@ export default {
       },
       testData: [
           {
-            id: 1,
-            label: "前端小智",
-            children: [
-              {
-                id: 2,
-                label: "Bob Esponja",
-                children: [
-                  {
-                    id: 4,
-                    label: "Patrick Estrela",
-                    children: []
-                  },
-                  {
-                    id: 5,
-                    label: "Sandy Bochechas",
-                    children: []
-                  }
-                ]
-              },
-              {
-                id: 3,
-                label: "Lula Molusco",
-                children: []
-              }
-            ]
-          },{
             id: 21,
             label: '小三',
-            children: []
+            children: [
+              {
+                id: 22,
+                label: '小4',
+                children: [
+                  {
+                    id: 222,
+                    label: '小44',
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: 21,
+            label: '小三',
+            children: [
+              {
+                id: 22,
+                label: '小4',
+                children: [
+                  {
+                    id: 222,
+                    label: '小44',
+                  },
+                  {
+                    id: 223,
+                    label: '小4466',
+                  }
+                ]
+              }
+            ]
           }
         ]
     }
   },
   methods: {
+    labelClassName (data) {
+      console.log(data.label)
+      return 'hhhhhhhh'
+    },
     onExpand (e, data) {
       if ('expand' in data) {
         data.expand = !data.expand

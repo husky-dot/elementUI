@@ -4,12 +4,17 @@
       :class="{
         'vertical': direction === 'vertical',
         'horizontal': direction === 'horizontal',
-        'show-collapsable': showCollapsable
+        'show-collapsable': showCollapsable,
+        'one-branch': data.length === 1
       }">
       <OkrTreeNode 
         v-for="node in data" :node="node"
         :show-collapsable="showCollapsable"
+        :label-width="labelWidth"
+        :label-height="labelHeight"
         :renderContent="renderContent"
+        :label-class-name="labelClassName"
+           v-bind="$attrs"
       ></OkrTreeNode>
     </div>
   </div>
@@ -42,6 +47,12 @@ export default {
     },
     // 树节点的内容区的渲染 Function
     renderContent: Function,
+    // 树节点区域的宽度
+    labelWidth: [String, Number],
+    // 树节点区域的高度
+    labelHeight: [String, Number],
+    // 树节点的样式
+    labelClassName: [Function, String],
   },
   computed : {
     ondeClass () {
@@ -114,12 +125,12 @@ export default {
   border-left: 1px solid #ccc;
 }
 /*我们需要从没有任何兄弟元素的元素中删除左右连接器*/
-.vertical .org-chart-node:only-child::after,
-.vertical .org-chart-node:only-child::before{
+.vertical.one-branch > .org-chart-node::after,
+.vertical.one-branch > .org-chart-node::before{
   display: none;
 }
 /*从单个子节点的顶部移除空格*/
-.vertical .org-chart-node:only-child{
+.vertical.one-branch >.org-chart-node{
   padding-top: 0;
 }
 /*从第一个子节点移除左连接器，从最后一个子节点移除右连接器*/
@@ -135,6 +146,17 @@ export default {
 .vertical .org-chart-node:first-child::after{
   border-radius: 5px 0 0 0;
 }
+.vertical .org-chart-node.is-leaf{
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.vertical .org-chart-node.is-leaf::before{
+  content: '';
+  display: block;
+  height: 20px;
+}
+
+
 /*从父节点添加向下的连接器了*/
 .vertical .org-chart-node-children::before{
   content: '';
@@ -230,8 +252,6 @@ export default {
   transition: all .5s;
 }
 
-
-
 /*使用 ::before 和 ::after 绘制连接器*/
 .horizontal .org-chart-node::before,
 .horizontal .org-chart-node::after{
@@ -249,14 +269,15 @@ export default {
 }
 
 /*我们需要从没有任何兄弟元素的元素中删除左右连接器*/
-.horizontal .org-chart-node:only-child::after,
-.horizontal .org-chart-node:only-child::before{
+.horizontal.one-branch > .org-chart-node::after,
+.horizontal.one-branch > .org-chart-node::before{
   display: none;
 }
 /*从单个子节点的顶部移除空格*/
-.horizontal .org-chart-node:only-child{
+.horizontal.one-branch >  .org-chart-node{
   padding-left: 0;
 }
+
 /*从第一个子节点移除左连接器，从最后一个子节点移除右连接器*/
 .horizontal .org-chart-node:first-child::before,
 .horizontal .org-chart-node:last-child::after{
@@ -269,6 +290,15 @@ export default {
 }
 .horizontal .org-chart-node:first-child::after{
   border-radius: 5px 0px 0 0;
+}
+.horizontal .org-chart-node.is-leaf{
+  position: relative;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.horizontal .org-chart-node.is-leaf::before{
+  content: '';
+  display: block;
 }
 
 

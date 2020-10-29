@@ -47,19 +47,25 @@ Vue.use(Vue2OrgTree)
 
 ## API
 
-#### props
+#### Attributes
 
 | 参数 | 说明 | 类型 | 可选值 | 默认值
 | :-----| ---- | :----: | :----: |  :----: |
-| show-collapsable | 	节点是否可被展开 | Boolean | — | false
+| label-width | 节点的宽度，默认为自动宽度。如果 label-width 为 number 类型，单位 px；如果 label-width 为 string 类型，则这个宽度会设置为 节点 的 style.width 的值，节点的宽度会受控于外部样式 | string/number | — | —
+| label-height | 节点的高度，默认为自动高度。如果 label-height 为 number 类型，单位 px；如果 label-height 为 string 类型，则这个高度会设置为 节点 的 style.height 的值，节点的高度会受控于外部样式 | string/number | — | —
+| label-class-name | 节点 className 的回调方法，也可以使用字符串为所有的节点设置一个固定的 className | Function({node)/String | — | — 
+| show-collapsable | 节点是否可被展开 | Boolean | — | false
 | direction | 树的展开方向 |  String |  horizontal / vertical | vertical
+| render-content | 树节点的内容区的渲染 Function |  Function(h, node) | —  | —
 
-### events
+
+
+### Events
 
   事件名称        | 说明                            | 回调参数
   ------------------|-----------------------------------------|:----------------------
-  node-click             |  	节点被点击时的回调              | 返回当前点击的 node
-  mouseover         |  onMouseOver event                      | `Function`
+  node-click             |  节点被点击时的回调  | 共二个参数，依次是该节点所对应的对象，节点对应的 Node
+  node-btn-click         |  展开按键被点击时的回调  | 共二个参数，依次是该节点所对应的对象，节点对应的 Node
   mouseout          |  onMouseOut event                       | `Function`
 
 ### Call events

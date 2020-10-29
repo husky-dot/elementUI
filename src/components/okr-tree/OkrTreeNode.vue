@@ -1,10 +1,20 @@
 <template>
   <div class="org-chart-node"
-      :class="{'collapsed': !expanded}"
+    :class="{
+        'collapsed': !expanded,
+        'is-leaf': !node.children || node.children.length <=0 
+      }"
     >
     <div class="org-chart-node-label">
-      <div class="org-chart-node-label-inner" @click="handleClick">
-        <node-content :node="node"></node-content>
+      <div class="org-chart-node-label-inner"
+        :class="computeLabelClass"
+        :style="computeLabelStyle"
+      >
+        <node-content :node="node" @click="handleClick">
+          <slot>
+            {{node.label}}
+          </slot>
+        </node-content>
       </div>
       <div v-if="showNodeBtn"
         class="org-chart-node-btn"
@@ -12,12 +22,14 @@
         @click="handleBtnClick"
       ></div>
     </div>
-    <div class="org-chart-node-children"  v-if="node.children.length > 0 && expanded">
+    <div class="org-chart-node-children"  v-if="node.children && node.children.length > 0 && expanded">
       <OkrTreeNode
         v-for="childNode in node.children"
         :node="childNode"
-        :show-collapsable="showCollapsable"
+        :label-width="labelWidth"
+        :label-height="labelHeight"
         :renderContent="renderContent"
+        :label-class-name="labelClassName"
       ></OkrTreeNode>
     </div>
   </div>
@@ -37,6 +49,12 @@ export default {
     },
     // 树节点的内容区的渲染 Function
     renderContent: Function,
+    // 树节点区域的宽度
+    labelWidth: [String, Number],
+    // 树节点区域的高度
+    labelHeight: [String, Number],
+    // 树节点的样式
+    labelClassName: [Function, String],
   },
   components: {
     NodeContent: {
@@ -46,12 +64,12 @@ export default {
         }
       },
       render(h) {
-        console.log('1')
         const parent = this.$parent
         if (parent._props.renderContent) {
           return parent._props.renderContent(h, this.node)
+        } else {
+          return this.$scopedSlots.default(this.node)
         }
-        // return <span class="el-tree-node__label">{ this.node.label }</span>
       }
     }
   },
@@ -59,6 +77,26 @@ export default {
     // 是否显示展开按钮
     showNodeBtn () {
       return this.showCollapsable && this.node.children && this.node.children.length > 0
+    },
+    // 节点的宽度
+    computeLabelStyle () {
+      let { labelWidth = 'auto', labelHeight = 'auto' } = this
+      if (typeof labelWidth === 'number') {
+        labelWidth = `${labelWidth}px`
+      }
+      if (typeof labelHeight === 'number') {
+        labelHeight = `${labelHeight}px`
+      }
+      return {
+        width: labelWidth,
+        height: labelHeight
+      }
+    },
+    computeLabelClass () {
+      if (typeof this.labelClassName === 'function'){
+        return this.labelClassName(this.node)
+      }
+      return this.labelClassName
     }
   },
   data () {
