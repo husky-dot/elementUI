@@ -1,6 +1,6 @@
 <template>
   <div class="org-chart-container">
-    <div class="org-chart-node-children"
+    <div ref="orgChartRoot" class="org-chart-node-children"
       :class="{
         'vertical': direction === 'vertical',
         'horizontal': direction === 'horizontal',
@@ -14,6 +14,9 @@
         :label-height="labelHeight"
         :renderContent="renderContent"
         :label-class-name="labelClassName"
+        :selected-key="selectedKey"
+        :default-expand-all="defaultExpandAll"
+        :node-key="nodeKey"
       ></OkrTreeNode>
     </div>
   </div>
@@ -22,6 +25,7 @@
 import Vue from 'vue'
 import OkrTreeNode from './OkrTreeNode.vue';
 export default {
+  name: 'OkrTree',
   components: {
     OkrTreeNode
   },
@@ -52,11 +56,23 @@ export default {
     labelHeight: [String, Number],
     // 树节点的样式
     labelClassName: [Function, String],
+    // 用来控制选择节点的字段名
+    selectedKey: String,
+    // 是否默认展开所有节点
+    defaultExpandAll: {
+      type: Boolean,
+      default: false
+    },
+    // 每个树节点用来作为唯一标识的属性，整棵树应该是唯一的
+    nodeKey: String,
+    defaultExpandedKeys: {
+      type: Array
+    }
   },
   computed : {
     ondeClass () {
       return {
-
+        findNode: null
       }
     }
   },
@@ -66,19 +82,65 @@ export default {
     }
   },
   mounted () {
-    this.listenerEvents()
+    this.__listenerEvents()
+    this.__canSetDefaultKeys()
   },
   methods: {
-    listenerEvents () {
-      this.okrEventBus.$on('node-click', this.handleClick)
-      this.okrEventBus.$on('node-btn-click', this.handleNodeBtnClick)
+    __listenerEvents () {
+      this.okrEventBus.$on('node-click', this.__handleClick)
+      this.okrEventBus.$on('node-btn-click', this.__handleNodeBtnClick)
     },
-    handleClick (e, data) {
+    __canSetDefaultKeys () {
+      if (this.defaultExpandedKeys) {
+        if (!this.nodeKey) throw new Error('[Tree] nodeKey is required in defaultExpandedKeys')
+      }
+      if (!Array.isArray(this.defaultExpandedKeys)) {
+        throw new Error('[Tree] defaultExpandedKeys muse be Arrya')
+      }
+      this.__setDefaultKeys()
+    },
+    __setDefaultKeys () {
+      let findNodes = []
+      this.defaultExpandedKeys.forEach(key => {
+        if (this.getNode(key)) {
+          findNodes.push(this.getNode(key))
+        }
+      })
+      findNodes.forEach(node => {
+        this.__nodeExpand(node)
+      })
+    },
+    __nodeExpand (node) {
+      node.expanded = true
+      if (node.$parent.$options.name === 'OkrTreeNode') {
+        this.__nodeExpand(node.$parent)
+      }
+    },
+    // 内置：根据 key 找到对应的节点
+    __findNode (children, nodeId) {
+      for (let i = 0; i < children.length; i++) {
+        let item = children[i]
+        if (nodeId === item.node[this.nodeKey]) {
+          return item
+        }
+        if (item.$children) {
+          let findNode = this.__findNode(item.$children, nodeId)
+          if (findNode) {
+            return findNode
+          }
+        }
+      }
+    },
+    __handleClick (e, data) {
       this.$emit('node-click', e, data)
     },
-    handleNodeBtnClick (data, e) {
+    __handleNodeBtnClick (data, e) {
       this.$emit('node-btn-click', data, e)
-    }
+    },
+    // 公开，根据 ID 获取对应 node 节点
+    getNode (nodeId) {
+      return this.__findNode(this.$children, nodeId)
+    },
   }
 }
 </script>
@@ -154,6 +216,10 @@ export default {
   display: block;
   height: 20px;
 }
+.vertical .org-chart-node.is-leaf .org-chart-node-label::after{
+  display: none;
+}
+
 
 
 /*从父节点添加向下的连接器了*/
@@ -176,6 +242,7 @@ export default {
   padding: 10px;
   margin: 0px;
   font-size: 16px;
+  word-break: break-all;
 }
 .vertical .org-chart-node-label .org-chart-node-label-inner:hover{
   background: #eeeeee;
@@ -299,6 +366,9 @@ export default {
   content: '';
   display: block;
 }
+.horizontal .org-chart-node.is-leaf .org-chart-node-label::after{
+  display: none;
+}
 
 
 /*从父节点添加向下的连接器了*/
@@ -322,6 +392,7 @@ export default {
   padding: 10px;
   margin: 10px 0;
   font-size: 16px;
+  word-break: break-all;
 }
 
 .horizontal .org-chart-node-label .org-chart-node-label-inner:hover{

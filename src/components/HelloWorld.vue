@@ -2,7 +2,9 @@
   <div>
     <Vue2OrgTree :data='treeData' collapsable horizontal
       @on-expand="onExpand"
-      selectedKey="222"
+      selected-class-name="selected-node"
+      selected-key="selectedKey"
+      @on-node-click="onNodeClick"
     />
     <hr >
     <OkrTree :data="testData"
@@ -12,13 +14,17 @@
       @node-btn-click='nodeBtnClick'
       label-width="100px"
       labelClassName='styleee'
+      selected-key="selected"
+      :default-expand-all='false'
+      node-key="id"
+      :defaultExpandedKeys='[1]'
     ></OkrTree>
     <hr>
-    <OkrTree :data="testData"
+    <!-- <OkrTree :data="testData"
       showCollapsable
       @node-click='nodeClick'
       @node-btn-click='nodeBtnClick'
-    ></OkrTree>
+    ></OkrTree> -->
   </div>
 </template>
 <script>
@@ -40,11 +46,11 @@ export default {
             label: "Bob Esponja",
             children: [
               {
-                id: 4,
+                id: 3,
                 label: "Patrick Estrela",
                 children: [
                     {
-                      id: 222,
+                      id: 4,
                       label: '小44',
                     }
                   ]
@@ -52,7 +58,7 @@ export default {
             ]
           },
           {
-            id: 3,
+            id: 5,
             label: "Lula Molusco",
             children: []
           }
@@ -60,35 +66,35 @@ export default {
       },
       testData: [
           {
-            id: 21,
+            id: 1,
             label: '小三',
             children: [
               {
-                id: 22,
-                label: '小4',
+                id: 2,
+                label: '小2',
                 children: [
                   {
-                    id: 222,
-                    label: '小44',
+                    id: 3,
+                    label: '小333',
                   }
                 ]
               }
             ]
           },
           {
-            id: 21,
+            id: 4,
             label: '小三',
             children: [
               {
-                id: 22,
+                id: 5,
                 label: '小4',
                 children: [
                   {
-                    id: 222,
-                    label: '小44',
+                    id: 6,
+                    label: '小66666666666666',
                   },
                   {
-                    id: 223,
+                    id: 7,
                     label: '小4466',
                   }
                 ]
@@ -120,9 +126,13 @@ export default {
         </div>
       )
     },
+    onNodeClick (e, data) {
+      console.log('CLICK', e);
+      this.$set(data, 'selectedKey', !data['selectedKey']);
+    },
     nodeClick (data, e) {
-      console.log(data)
-      console.log(e)
+      console.log('1111111')
+      console.log(data, e)
     },
     nodeBtnClick (data, e) {
       console.log(data)
@@ -132,5 +142,11 @@ export default {
 }
 </script>
 <style>
+      .selected-node {
+        background: tomato;
+      }
+      .bg_node {
+        cursor: pointer;
+      }
 </style>
 

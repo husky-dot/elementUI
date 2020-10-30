@@ -7,10 +7,11 @@
     >
     <div class="org-chart-node-label">
       <div class="org-chart-node-label-inner"
+        @click="handleClick"
         :class="computeLabelClass"
         :style="computeLabelStyle"
       >
-        <node-content :node="node" @click="handleClick">
+        <node-content :node="node" >
           <slot>
             {{node.label}}
           </slot>
@@ -22,14 +23,21 @@
         @click="handleBtnClick"
       ></div>
     </div>
-    <div class="org-chart-node-children"  v-if="node.children && node.children.length > 0 && expanded">
+    <div class="org-chart-node-children"
+      v-if="node.children && node.children.length > 0"
+      :style="computNodeStyle"
+      >
       <OkrTreeNode
         v-for="childNode in node.children"
+        :show-collapsable="showCollapsable"
         :node="childNode"
         :label-width="labelWidth"
         :label-height="labelHeight"
         :renderContent="renderContent"
         :label-class-name="labelClassName"
+        :selected-key="selectedKey"
+        :default-expand-all="defaultExpandAll"
+        :node-key="nodeKey"
       ></OkrTreeNode>
     </div>
   </div>
@@ -55,6 +63,15 @@ export default {
     labelHeight: [String, Number],
     // 树节点的样式
     labelClassName: [Function, String],
+    // 用来控制选择节点的字段名
+    selectedKey: String,
+    // 是否默认展开所有节点
+    defaultExpandAll: {
+      type: Boolean,
+      default: false
+    },
+    // 每个树节点用来作为唯一标识的属性，整棵树应该是唯一的
+    nodeKey: String
   },
   components: {
     NodeContent: {
@@ -97,15 +114,21 @@ export default {
         return this.labelClassName(this.node)
       }
       return this.labelClassName
+    },
+    computNodeStyle () {
+      return {
+        display: this.expanded ? '' : 'none'
+      }
     }
   },
   data () {
     return {
-      expanded: true
+      expanded: this.defaultExpandAll
     }
   },
   methods: {
     handleClick (e) {
+      console.log('aaaa')
       this.okrEventBus.$emit('node-click', this.node, e)
     },
     handleBtnClick (e) {

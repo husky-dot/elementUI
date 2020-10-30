@@ -51,12 +51,15 @@ Vue.use(Vue2OrgTree)
 
 | 参数 | 说明 | 类型 | 可选值 | 默认值
 | :-----| ---- | :----: | :----: |  :----: |
+| direction | 树的展开方向 |  String |  horizontal / vertical | vertical
 | label-width | 节点的宽度，默认为自动宽度。如果 label-width 为 number 类型，单位 px；如果 label-width 为 string 类型，则这个宽度会设置为 节点 的 style.width 的值，节点的宽度会受控于外部样式 | string/number | — | —
 | label-height | 节点的高度，默认为自动高度。如果 label-height 为 number 类型，单位 px；如果 label-height 为 string 类型，则这个高度会设置为 节点 的 style.height 的值，节点的高度会受控于外部样式 | string/number | — | —
 | label-class-name | 节点 className 的回调方法，也可以使用字符串为所有的节点设置一个固定的 className | Function({node)/String | — | — 
 | show-collapsable | 节点是否可被展开 | Boolean | — | false
-| direction | 树的展开方向 |  String |  horizontal / vertical | vertical
+| default-expand-all | 是否默认展开所有节点 | Boolean | — | false
 | render-content | 树节点的内容区的渲染 Function |  Function(h, node) | —  | —
+| node-key | 每个树节点用来作为唯一标识的属性，整棵树应该是唯一的 | String | —  | —
+| default-expanded-keys | 默认展开的节点的 key 的数组(需要注意的是，此时必须设置node-key，其值为节点数据中的一个字段名，该字段在整棵树中是唯一的。) |  array |  — | —
 
 
 
