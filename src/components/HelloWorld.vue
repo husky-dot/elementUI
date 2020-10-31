@@ -15,16 +15,16 @@
       label-width="100px"
       labelClassName='styleee'
       selected-key="selected"
-      :default-expand-all='false'
+      :default-expand-all='true'
       node-key="id"
-      :defaultExpandedKeys='[1]'
     ></OkrTree>
     <hr>
-    <!-- <OkrTree :data="testData"
+    <OkrTree :data="testData"
       showCollapsable
       @node-click='nodeClick'
       @node-btn-click='nodeBtnClick'
-    ></OkrTree> -->
+      :default-expand-all='true'
+    ></OkrTree>
   </div>
 </template>
 <script>

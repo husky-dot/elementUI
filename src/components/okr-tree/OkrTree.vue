@@ -91,11 +91,12 @@ export default {
       this.okrEventBus.$on('node-btn-click', this.__handleNodeBtnClick)
     },
     __canSetDefaultKeys () {
+      if (!this.defaultExpandedKeys) return
       if (this.defaultExpandedKeys) {
         if (!this.nodeKey) throw new Error('[Tree] nodeKey is required in defaultExpandedKeys')
       }
       if (!Array.isArray(this.defaultExpandedKeys)) {
-        throw new Error('[Tree] defaultExpandedKeys muse be Arrya')
+        throw new Error('[Tree] defaultExpandedKeys muse be Arry')
       }
       this.__setDefaultKeys()
     },

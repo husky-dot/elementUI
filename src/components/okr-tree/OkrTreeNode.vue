@@ -77,7 +77,7 @@ export default {
     NodeContent: {
       props: {
         node: {
-          required: true
+          required: true,
         }
       },
       render(h) {
@@ -123,7 +123,10 @@ export default {
   },
   data () {
     return {
-      expanded: this.defaultExpandAll
+      // node 的展开状态
+      expanded: this.defaultExpandAll,
+      // node 的选中状态
+      isCurrent: false
     }
   },
   methods: {

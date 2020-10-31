@@ -44,7 +44,6 @@ Vue.use(Vue2OrgTree)
 <script src="https://unpkg.com/vue2-org-tree/dist/index.js"></script>
 ```
 
-
 ## API
 
 #### Attributes
