@@ -87,7 +87,7 @@ export default {
   },
   methods: {
     __listenerEvents () {
-      this.okrEventBus.$on('node-click', this.__handleClick)
+      this.okrEventBus.$on('node-click', this.__handleNodeClick)
       this.okrEventBus.$on('node-btn-click', this.__handleNodeBtnClick)
     },
     __canSetDefaultKeys () {
@@ -132,7 +132,8 @@ export default {
         }
       }
     },
-    __handleClick (e, data) {
+    __handleNodeClick (data, e) {
+      // 这里给当前选中的节点添加 is-current
       this.$emit('node-click', e, data)
     },
     __handleNodeBtnClick (data, e) {

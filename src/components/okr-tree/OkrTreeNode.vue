@@ -7,7 +7,7 @@
     >
     <div class="org-chart-node-label">
       <div class="org-chart-node-label-inner"
-        @click="handleClick"
+        @click="handleNodeClick"
         :class="computeLabelClass"
         :style="computeLabelStyle"
       >
@@ -110,10 +110,16 @@ export default {
       }
     },
     computeLabelClass () {
+      let clsArr = []
       if (typeof this.labelClassName === 'function'){
-        return this.labelClassName(this.node)
+        clsArr.push(this.labelClassName(this.node))
+      } else {
+        clsArr.push(this.labelClassName)
       }
-      return this.labelClassName
+      if (this.isCurrent) {
+        clsArr.push('is-current')
+      }
+      return clsArr
     },
     computNodeStyle () {
       return {
@@ -130,8 +136,7 @@ export default {
     }
   },
   methods: {
-    handleClick (e) {
-      console.log('aaaa')
+    handleNodeClick (e) {
       this.okrEventBus.$emit('node-click', this.node, e)
     },
     handleBtnClick (e) {
