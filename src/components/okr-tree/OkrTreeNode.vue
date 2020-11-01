@@ -38,6 +38,7 @@
         :selected-key="selectedKey"
         :default-expand-all="defaultExpandAll"
         :node-key="nodeKey"
+        :props="props"
       ></OkrTreeNode>
     </div>
   </div>
@@ -47,6 +48,7 @@ export default {
   name: 'OkrTreeNode',
   inject: ['okrEventBus'],
   props: {
+    props: {},
     node: {
       required: true,
     },

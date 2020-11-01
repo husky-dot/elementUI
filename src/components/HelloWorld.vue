@@ -7,7 +7,7 @@
       @on-node-click="onNodeClick"
     />
     <hr >
-    <OkrTree :data="testData"
+    <!-- <OkrTree :data="testData"
       direction='horizontal'
       showCollapsable
       @node-click='nodeClick'
@@ -17,14 +17,24 @@
       selected-key="selected"
       :default-expand-all='true'
       node-key="id"
+    ></OkrTree> -->
+    <OkrTree :data="testData"
+      direction='horizontal'
+      showCollapsable
+      @node-click='nodeClick'
+      @node-btn-click='nodeBtnClick'
+      label-width="100px"
+      labelClassName='styleee'
+      selected-key="selected"
+
     ></OkrTree>
     <hr>
-    <OkrTree :data="testData"
+    <!-- <OkrTree :data="testData"
       showCollapsable
       @node-click='nodeClick'
       @node-btn-click='nodeBtnClick'
       :default-expand-all='true'
-    ></OkrTree>
+    ></OkrTree> -->
   </div>
 </template>
 <script>

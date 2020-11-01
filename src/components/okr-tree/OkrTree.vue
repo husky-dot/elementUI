@@ -17,6 +17,7 @@
         :selected-key="selectedKey"
         :default-expand-all="defaultExpandAll"
         :node-key="nodeKey"
+        :props="props"
       ></OkrTreeNode>
     </div>
   </div>
@@ -24,6 +25,7 @@
 <script>
 import Vue from 'vue'
 import OkrTreeNode from './OkrTreeNode.vue';
+import TreeStore from './model/tree-store.js';
 export default {
   name: 'OkrTree',
   components: {
@@ -67,7 +69,16 @@ export default {
     nodeKey: String,
     defaultExpandedKeys: {
       type: Array
-    }
+    },
+    props: {
+      default() {
+        return {
+          children: 'children',
+          label: 'label',
+          disabled: 'disabled'
+        };
+      }
+    },
   },
   computed : {
     ondeClass () {
@@ -80,6 +91,22 @@ export default {
     return {
       okrEventBus: new Vue(),
     }
+  },
+  created () {
+    this.isTree = true;
+
+    this.store = new TreeStore({
+      key: this.nodeKey,
+      data: this.data,
+      props: this.props,
+      defaultExpandedKeys: this.defaultExpandedKeys,
+      defaultExpandAll: this.defaultExpandAll,
+      filterNodeMethod: this.filterNodeMethod
+    });
+
+    this.root = this.store.root;
+    // console.log(this.store)
+    console.log(this.root)
   },
   mounted () {
     this.__listenerEvents()
