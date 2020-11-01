@@ -105,7 +105,7 @@ export default {
     });
 
     this.root = this.store.root;
-    // console.log(this.store)
+    console.log(this.store)
     console.log(this.root)
   },
   mounted () {

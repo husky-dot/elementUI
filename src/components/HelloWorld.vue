@@ -35,6 +35,7 @@
       @node-btn-click='nodeBtnClick'
       :default-expand-all='true'
     ></OkrTree> -->
+    <el-tree :data="testData" :props="defaultProps"></el-tree>
   </div>
 </template>
 <script>
@@ -47,6 +48,10 @@ export default {
   },
   data () {
     return {
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
       treeData: {
         id: 1,
         label: "前端小智",

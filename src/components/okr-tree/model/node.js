@@ -21,6 +21,8 @@ let nodeIdSeed = 0;
 
 export default class Node {
   constructor(options) {
+    console.log('444444444444444444444')
+    console.log(options)
     this.id = nodeIdSeed++;
     this.data = null;
     this.expanded = false;
@@ -56,16 +58,13 @@ export default class Node {
     if (!Array.isArray(this.data)) {
       markNodeData(this, this.data);
     }
+    this.updateLeafState();
   }
 
   setData(data) {
     if (!Array.isArray(data)) {
-      console.log('555555555555')
-      console.log(data)
       markNodeData(this, data);
     }
-    console.log('666666666666')
-    console.log(data)
     this.data = data;
     this.childNodes = [];
 
@@ -74,11 +73,10 @@ export default class Node {
       children = this.data;
     } else {
       children = getPropertyFromData(this, 'children') || [];
-      console.log('1111111111111111111111')
-      console.log(data)
-      console.log(children)
     }
     console.log(children.length)
+    console.log(data)
+    console.log(children)
     for (let i = 0, j = children.length; i < j; i++) {
       this.insertChild({ data: children[i] });
     }
@@ -86,6 +84,7 @@ export default class Node {
 
   insertChild(child, index, batch) {
     if (!child) throw new Error('insertChild error: child is required.');
+    console.log(child)
     console.log(child instanceof Node)
     if (!(child instanceof Node)) {
       if (!batch) {
@@ -143,11 +142,7 @@ export default class Node {
       return;
     }
     const childNodes = this.childNodes;
-    console.log('9999999999999999999999999')
-    console.log(!this.store.lazy)
     if (!this.store.lazy || (this.store.lazy === true && this.loaded === true)) {
-      console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-      console.log(childNodes)
       this.isLeaf = !childNodes || childNodes.length === 0;
       return;
     }
