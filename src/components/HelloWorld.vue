@@ -28,14 +28,27 @@
       selected-key="selected"
       showCollapsable
       node-key="id"
-      :default-expanded-keys='[3]'
+      :default-expanded-keys='[7]'
+    ></OkrTree>
+    <OkrTree :data="treeData"
+      direction='horizontal'
+      @node-click='nodeClick'
+      @node-expand='handleNodeExpand'
+      @node-collapse='handleNodeCollapse'
+      label-width="100px"
+      labelClassName='styleee'
+      selected-key="selected"
+      showCollapsable
+      node-key="id"
     ></OkrTree>
     <hr>
+    <!-- 
     <OkrTree :data="testData"
       @node-click='nodeClick'
       @node-expand='handleNodeExpand'
       @node-collapse='handleNodeCollapse'
     ></OkrTree>
+    -->
     <!-- <el-tree :data="testData" :props="defaultProps" :default-expanded-keys='[2]' node-key="id" :auto-expand-parent="false"></el-tree> -->
   </div>
 </template>
@@ -53,7 +66,7 @@ export default {
         children: 'children',
         label: 'label'
       },
-      treeData: {
+      treeData: [{
         id: 1,
         label: "前端小智",
         children: [
@@ -76,48 +89,53 @@ export default {
           {
             id: 5,
             label: "Lula Molusco",
-            children: []
+            children: [{
+              id: 6,
+              label: "Lula Molusco",
+            }]
+          }
+        ]
+      }
+      ],
+      testData: [
+      {
+        id: 1,
+        label: '小三',
+        children: [
+          {
+            id: 2,
+            label: '小2',
+            children: [
+              {
+                id: 3,
+                label: '小333',
+              }
+            ]
           }
         ]
       },
-      testData: [
+      {
+        id: 4,
+        label: '小三小三小三小三小三小三小三小三',
+        children: [
           {
-            id: 1,
-            label: '小三',
+            id: 5,
+            label: '小4小三小三小三小三小三小三小三小三小三',
             children: [
               {
-                id: 2,
-                label: '小2',
-                children: [
-                  {
-                    id: 3,
-                    label: '小333',
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: 4,
-            label: '小三小三小三小三小三小三小三小三',
-            children: [
+                id: 6,
+                label: '小66666666666666',
+              },
               {
-                id: 5,
-                label: '小4小三小三小三小三小三小三小三小三小三',
-                children: [
-                  {
-                    id: 6,
-                    label: '小66666666666666',
-                  },
-                  {
-                    id: 7,
-                    label: '小4466',
-                  }
-                ]
+                id: 7,
+                label: '小4466',
               }
             ]
           }
         ]
+      }
+      ]
+
     }
   },
   methods: {
