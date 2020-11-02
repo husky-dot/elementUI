@@ -85,14 +85,6 @@ export default {
                   ]
               }
             ]
-          },
-          {
-            id: 5,
-            label: "Lula Molusco",
-            children: [{
-              id: 6,
-              label: "Lula Molusco",
-            }]
           }
         ]
       }
@@ -108,6 +100,10 @@ export default {
             children: [
               {
                 id: 3,
+                label: '小333',
+              },
+              {
+                id: 13,
                 label: '小333',
               }
             ]
@@ -128,6 +124,14 @@ export default {
               },
               {
                 id: 7,
+                label: '小4466',
+              },
+              {
+                id: 8,
+                label: '小4466',
+              },
+              {
+                id: 9,
                 label: '小4466',
               }
             ]
