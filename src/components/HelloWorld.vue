@@ -20,22 +20,23 @@
     ></OkrTree> -->
     <OkrTree :data="testData"
       direction='horizontal'
-      showCollapsable
       @node-click='nodeClick'
-      @node-btn-click='nodeBtnClick'
+      @node-expand='handleNodeExpand'
+      @node-collapse='handleNodeCollapse'
       label-width="100px"
       labelClassName='styleee'
       selected-key="selected"
-
+      showCollapsable
+      node-key="id"
+      :default-expanded-keys='[3]'
     ></OkrTree>
     <hr>
-    <!-- <OkrTree :data="testData"
-      showCollapsable
+    <OkrTree :data="testData"
       @node-click='nodeClick'
-      @node-btn-click='nodeBtnClick'
-      :default-expand-all='true'
-    ></OkrTree> -->
-    <el-tree :data="testData" :props="defaultProps"></el-tree>
+      @node-expand='handleNodeExpand'
+      @node-collapse='handleNodeCollapse'
+    ></OkrTree>
+    <!-- <el-tree :data="testData" :props="defaultProps" :default-expanded-keys='[2]' node-key="id" :auto-expand-parent="false"></el-tree> -->
   </div>
 </template>
 <script>
@@ -98,11 +99,11 @@ export default {
           },
           {
             id: 4,
-            label: '小三',
+            label: '小三小三小三小三小三小三小三小三',
             children: [
               {
                 id: 5,
-                label: '小4',
+                label: '小4小三小三小三小三小三小三小三小三小三',
                 children: [
                   {
                     id: 6,
@@ -122,7 +123,6 @@ export default {
   methods: {
     labelClassName (data) {
       console.log(data.label)
-      return 'hhhhhhhh'
     },
     onExpand (e, data) {
       if ('expand' in data) {
@@ -141,17 +141,23 @@ export default {
         </div>
       )
     },
-    onNodeClick (e, data) {
+    onNodeClick (data) {
       console.log('CLICK', e);
-      this.$set(data, 'selectedKey', !data['selectedKey']);
     },
-    nodeClick (data, e) {
-      console.log('1111111')
-      console.log(data, e)
+    nodeClick (nodeData, node, instance) {
+      console.log(nodeData)
+      console.log(node)
+      console.log(instance)
     },
-    nodeBtnClick (data, e) {
-      console.log(data)
-      console.log(e)
+    handleNodeExpand(nodeData, node, instance) {
+      console.log(nodeData)
+      console.log(node)
+      console.log(instance)
+    },
+    handleNodeCollapse(nodeData, node, instance) {
+      console.log(nodeData)
+      console.log(node)
+      console.log(instance)
     },
   }
 }

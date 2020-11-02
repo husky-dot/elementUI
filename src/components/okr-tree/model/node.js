@@ -16,13 +16,10 @@ const getPropertyFromData = function(node, prop) {
   }
 };
 
-
 let nodeIdSeed = 0;
 
 export default class Node {
   constructor(options) {
-    console.log('444444444444444444444')
-    console.log(options)
     this.id = nodeIdSeed++;
     this.data = null;
     this.expanded = false;
@@ -48,16 +45,20 @@ export default class Node {
     store.registerNode(this);
 
     this.setData(this.data);
-    const props = store.props;
-    if (!this.data) return;
 
-    if (store.defaultExpandAll) {
+    if (store.defaultExpandAll || !store.showCollapsable) {
       this.expanded = true;
     }
-
     if (!Array.isArray(this.data)) {
       markNodeData(this, this.data);
     }
+    if (!this.data) return;
+    const defaultExpandedKeys = store.defaultExpandedKeys;
+    const key = store.key;
+    if (key && defaultExpandedKeys && defaultExpandedKeys.indexOf(this.key) !== -1) {
+      this.expand(null, true);
+    }
+
     this.updateLeafState();
   }
 
@@ -74,18 +75,21 @@ export default class Node {
     } else {
       children = getPropertyFromData(this, 'children') || [];
     }
-    console.log(children.length)
-    console.log(data)
-    console.log(children)
     for (let i = 0, j = children.length; i < j; i++) {
       this.insertChild({ data: children[i] });
     }
   }
+  get key() {
+    const nodeKey = this.store.key;
+    if (this.data) return this.data[nodeKey];
+    return null;
+  }
+  get label() {
+    return getPropertyFromData(this, 'label');
+  }
 
   insertChild(child, index, batch) {
     if (!child) throw new Error('insertChild error: child is required.');
-    console.log(child)
-    console.log(child instanceof Node)
     if (!(child instanceof Node)) {
       if (!batch) {
         const children = this.getChildren(true);
@@ -147,5 +151,26 @@ export default class Node {
       return;
     }
     this.isLeaf = false;
+  }
+  // 节点的收起
+  collapse () {
+    this.expanded = false;
+  }
+  // 节点的展开
+  expand (callback, expandParent) {
+    console.log('1111111111111111')
+    console.log(expandParent)
+    const done = () => {
+      if (expandParent) {
+        let parent = this.parent;
+        while (parent.level > 0) {
+          parent.expanded = true;
+          parent = parent.parent;
+        }
+      }
+      this.expanded = true;
+      if (callback) callback();
+    };
+    done()
   }
 }

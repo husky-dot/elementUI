@@ -8,7 +8,8 @@
         'one-branch': data.length === 1
       }">
       <OkrTreeNode 
-        v-for="node in data" :node="node"
+        v-for="child in root.childNodes"
+        :node="child"
         :show-collapsable="showCollapsable"
         :label-width="labelWidth"
         :label-height="labelHeight"
@@ -17,6 +18,7 @@
         :selected-key="selectedKey"
         :default-expand-all="defaultExpandAll"
         :node-key="nodeKey"
+        :key="getNodeKey(child)"
         :props="props"
       ></OkrTreeNode>
     </div>
@@ -26,6 +28,7 @@
 import Vue from 'vue'
 import OkrTreeNode from './OkrTreeNode.vue';
 import TreeStore from './model/tree-store.js';
+import { getNodeKey } from './model/util';
 export default {
   name: 'OkrTree',
   components: {
@@ -90,59 +93,35 @@ export default {
   data () {
     return {
       okrEventBus: new Vue(),
+      store: null,
+      root: null
     }
   },
   created () {
     this.isTree = true;
-
     this.store = new TreeStore({
       key: this.nodeKey,
       data: this.data,
       props: this.props,
       defaultExpandedKeys: this.defaultExpandedKeys,
+      showCollapsable: this.showCollapsable,
       defaultExpandAll: this.defaultExpandAll,
       filterNodeMethod: this.filterNodeMethod
-    });
-
+    })
     this.root = this.store.root;
     console.log(this.store)
     console.log(this.root)
   },
-  mounted () {
-    this.__listenerEvents()
-    this.__canSetDefaultKeys()
+  watch: {
+    defaultExpandedKeys(newVal) {
+      this.store.defaultExpandedKeys = newVal;
+      this.store.setDefaultExpandedKeys(newVal);
+    }
   },
   methods: {
-    __listenerEvents () {
-      this.okrEventBus.$on('node-click', this.__handleNodeClick)
-      this.okrEventBus.$on('node-btn-click', this.__handleNodeBtnClick)
-    },
-    __canSetDefaultKeys () {
-      if (!this.defaultExpandedKeys) return
-      if (this.defaultExpandedKeys) {
-        if (!this.nodeKey) throw new Error('[Tree] nodeKey is required in defaultExpandedKeys')
-      }
-      if (!Array.isArray(this.defaultExpandedKeys)) {
-        throw new Error('[Tree] defaultExpandedKeys muse be Arry')
-      }
-      this.__setDefaultKeys()
-    },
-    __setDefaultKeys () {
-      let findNodes = []
-      this.defaultExpandedKeys.forEach(key => {
-        if (this.getNode(key)) {
-          findNodes.push(this.getNode(key))
-        }
-      })
-      findNodes.forEach(node => {
-        this.__nodeExpand(node)
-      })
-    },
-    __nodeExpand (node) {
-      node.expanded = true
-      if (node.$parent.$options.name === 'OkrTreeNode') {
-        this.__nodeExpand(node.$parent)
-      }
+    getNodeKey(node) {
+      console.log(getNodeKey(this.nodeKey, node.data))
+      return getNodeKey(this.nodeKey, node.data);
     },
     // 内置：根据 key 找到对应的节点
     __findNode (children, nodeId) {
@@ -158,13 +137,6 @@ export default {
           }
         }
       }
-    },
-    __handleNodeClick (data, e) {
-      // 这里给当前选中的节点添加 is-current
-      this.$emit('node-click', e, data)
-    },
-    __handleNodeBtnClick (data, e) {
-      this.$emit('node-btn-click', data, e)
     },
     // 公开，根据 ID 获取对应 node 节点
     getNode (nodeId) {
@@ -233,6 +205,10 @@ export default {
   border-right: 1px solid #ccc;
   border-radius: 0 5px 0 0;
 }
+.vertical .org-chart-node:only-child:before{
+  border-radius: 0 0px 0 0;
+  margin-right: -1px;
+}
 .vertical .org-chart-node:first-child::after{
   border-radius: 5px 0 0 0;
 }
@@ -248,7 +224,6 @@ export default {
 .vertical .org-chart-node.is-leaf .org-chart-node-label::after{
   display: none;
 }
-
 
 
 /*从父节点添加向下的连接器了*/
@@ -383,6 +358,10 @@ export default {
   border-bottom: 1px solid #ccc;
   border-radius: 0 0px 0 5px;
 }
+.horizontal .org-chart-node:only-child::before{
+  border-radius: 0 0px 0 0px;
+}
+
 .horizontal .org-chart-node:first-child::after{
   border-radius: 5px 0px 0 0;
 }

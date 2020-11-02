@@ -1,8 +1,9 @@
 <template>
   <div class="org-chart-node"
     :class="{
-        'collapsed': !expanded,
-        'is-leaf': !node.children || node.children.length <=0 
+        'collapsed': !node.expanded,
+        'is-leaf': node.isLeaf,
+        'is-current': node.isCurrent,
       }"
     >
     <div class="org-chart-node-label">
@@ -13,44 +14,47 @@
       >
         <node-content :node="node" >
           <slot>
-            {{node.label}}
+            {{node.data.label}} {{ node.expanded}}
           </slot>
         </node-content>
       </div>
       <div v-if="showNodeBtn"
         class="org-chart-node-btn"
-        :class="{'expanded': expanded}"
+        :class="{'expanded': node.expanded}"
         @click="handleBtnClick"
       ></div>
     </div>
     <div class="org-chart-node-children"
-      v-if="node.children && node.children.length > 0"
+      v-if="node.childNodes && node.childNodes.length > 0"
       :style="computNodeStyle"
       >
       <OkrTreeNode
-        v-for="childNode in node.children"
+        v-for="child in node.childNodes"
         :show-collapsable="showCollapsable"
-        :node="childNode"
+        :node="child"
         :label-width="labelWidth"
         :label-height="labelHeight"
         :renderContent="renderContent"
         :label-class-name="labelClassName"
         :selected-key="selectedKey"
-        :default-expand-all="defaultExpandAll"
         :node-key="nodeKey"
+        :key="getNodeKey(child)"
         :props="props"
       ></OkrTreeNode>
     </div>
   </div>
 </template>
 <script>
+import { getNodeKey } from './model/util';
 export default {
   name: 'OkrTreeNode',
   inject: ['okrEventBus'],
   props: {
     props: {},
     node: {
-      required: true,
+      default() {
+        return {};
+      }
     },
     // 子节点是否可折叠
     showCollapsable: {
@@ -67,11 +71,6 @@ export default {
     labelClassName: [Function, String],
     // 用来控制选择节点的字段名
     selectedKey: String,
-    // 是否默认展开所有节点
-    defaultExpandAll: {
-      type: Boolean,
-      default: false
-    },
     // 每个树节点用来作为唯一标识的属性，整棵树应该是唯一的
     nodeKey: String
   },
@@ -95,7 +94,7 @@ export default {
   computed: {
     // 是否显示展开按钮
     showNodeBtn () {
-      return this.showCollapsable && this.node.children && this.node.children.length > 0
+      return this.showCollapsable && this.node.childNodes && this.node.childNodes.length > 0
     },
     // 节点的宽度
     computeLabelStyle () {
@@ -125,25 +124,53 @@ export default {
     },
     computNodeStyle () {
       return {
-        display: this.expanded ? '' : 'none'
+        display: this.node.expanded ? '' : 'none'
       }
+    }
+  },
+  watch: {
+    'node.expanded'(val) {
+      // this.$nextTick(() => this.expanded = val);
     }
   },
   data () {
     return {
       // node 的展开状态
-      expanded: this.defaultExpandAll,
+      expanded: false,
       // node 的选中状态
-      isCurrent: false
+      isCurrent: false,
+      tree: null
+    }
+  },
+  created () {
+
+    const parent = this.$parent;
+    if (parent.isTree) {
+      this.tree = parent;
+    } else {
+      this.tree = parent.tree;
+    }
+
+    const tree = this.tree;
+    if (!tree) {
+      console.warn('Can not find node\'s tree.');
     }
   },
   methods: {
+    getNodeKey(node) {
+      return getNodeKey(this.nodeKey, node.data);
+    },
     handleNodeClick (e) {
-      this.okrEventBus.$emit('node-click', this.node, e)
+      this.tree.$emit('node-click', this.node.data, this.node, this);
     },
     handleBtnClick (e) {
-      this.expanded = !this.expanded
-      this.okrEventBus.$emit('node-btn-click', this.node, e)
+      if (this.node.expanded) {
+        this.node.collapse()
+        this.tree.$emit('node-collapse', this.node.data, this.node, this)
+      } else {
+        this.node.expand()
+        this.tree.$emit('node-expand', this.node.data, this.node, this)
+      }
     }
   }
 }
