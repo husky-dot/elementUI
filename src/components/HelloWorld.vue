@@ -20,6 +20,7 @@
     ></OkrTree> -->
     <OkrTree :data="testData"
       orkstyle
+      ref="tree"
       direction='horizontal'
       @node-click='nodeClick'
       @node-expand='handleNodeExpand'
@@ -27,7 +28,8 @@
       @node-contextmenu="handleContextNenu"
       :default-expand-all="true"
       label-width="100px"
-      labelClassName='styleee'
+      :labelClassName='rednerLabelClass'
+      currentLableClassName="xiohong"
       selected-key="selected"
       showCollapsable
       node-key="id"
@@ -118,12 +120,16 @@ export default {
           },
           {
             id: 1113,
-            label: '小11333',
+            label: '小1133339933',
           }]
         }]
       }]
 
     }
+  },
+  mounted () {
+    this.$refs.tree.setCurrentKey(112)
+    console.log(this.$refs.tree.getCurrentKey())
   },
   methods: {
     labelClassName (data) {
@@ -169,6 +175,9 @@ export default {
       console.log(nodeData)
       console.log(node)
       console.log(instance)
+    },
+    rednerLabelClass () {
+      return 'xiaomingg'
     }
   }
 }

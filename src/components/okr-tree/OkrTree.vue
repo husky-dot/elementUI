@@ -10,11 +10,11 @@
       <OkrTreeNode 
         v-for="child in root.childNodes"
         :node="child"
+        orkstyle
         :show-collapsable="showCollapsable"
         :label-width="labelWidth"
         :label-height="labelHeight"
         :renderContent="renderContent"
-        :label-class-name="labelClassName"
         :selected-key="selectedKey"
         :default-expand-all="defaultExpandAll"
         :node-key="nodeKey"
@@ -53,6 +53,10 @@ export default {
       type: Boolean,
       default: false
     },
+    orkstyle: {
+      type: Boolean,
+      default: false
+    },
     // 树节点的内容区的渲染 Function
     renderContent: Function,
     // 树节点区域的宽度
@@ -61,6 +65,8 @@ export default {
     labelHeight: [String, Number],
     // 树节点的样式
     labelClassName: [Function, String],
+    // 当前选中节点样式
+    currentLableClassName: [Function, String],
     // 用来控制选择节点的字段名
     selectedKey: String,
     // 是否默认展开所有节点
@@ -109,7 +115,9 @@ export default {
       showCollapsable: this.showCollapsable,
       currentNodeKey: this.currentNodeKey,
       defaultExpandAll: this.defaultExpandAll,
-      filterNodeMethod: this.filterNodeMethod
+      filterNodeMethod: this.filterNodeMethod,
+      labelClassName: this.labelClassName,
+      currentLableClassName: this.currentLableClassName,
     })
     this.root = this.store.root;
     console.log(this.store)
@@ -126,25 +134,30 @@ export default {
       console.log(getNodeKey(this.nodeKey, node.data))
       return getNodeKey(this.nodeKey, node.data);
     },
-    // 内置：根据 key 找到对应的节点
-    __findNode (children, nodeId) {
-      for (let i = 0; i < children.length; i++) {
-        let item = children[i]
-        if (nodeId === item.node[this.nodeKey]) {
-          return item
-        }
-        if (item.$children) {
-          let findNode = this.__findNode(item.$children, nodeId)
-          if (findNode) {
-            return findNode
-          }
-        }
-      }
+    // 通过 node 设置某个节点的当前选中状态
+    setCurrentNode(node) {
+      if (!this.nodeKey) throw new Error('[Tree] nodeKey is required in setCurrentNode');
+      this.store.setUserCurrentNode(node);
     },
-    // 公开，根据 ID 获取对应 node 节点
-    getNode (nodeId) {
-      return this.__findNode(this.$children, nodeId)
+    // 根据 data 或者 key 拿到 Tree 组件中的 node
+    getNode(data) {
+      return this.store.getNode(data);
     },
+    // 通过 key 设置某个节点的当前选中状态
+    setCurrentKey(key) {
+      if (!this.nodeKey) throw new Error('[Tree] nodeKey is required in setCurrentKey');
+      this.store.setCurrentNodeKey(key);
+    },
+    // 获取当前被选中节点的 data
+    getCurrentNode() {
+      const currentNode = this.store.getCurrentNode();
+      return currentNode ? currentNode.data : null;
+    },
+    getCurrentKey() {
+      if (!this.nodeKey) throw new Error('[Tree] nodeKey is required in getCurrentKey');
+      const currentNode = this.getCurrentNode();
+      return currentNode ? currentNode[this.nodeKey] : null;
+    }
   }
 }
 </script>

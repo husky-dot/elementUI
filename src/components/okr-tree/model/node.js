@@ -43,12 +43,13 @@ export default class Node {
       throw new Error('[Node]store is required!');
     }
     store.registerNode(this);
-
-    this.setData(this.data);
-
-    if (store.defaultExpandAll || !store.showCollapsable) {
-      this.expanded = true;
+    if (this.data) {
+      this.setData(this.data)
+      if (store.defaultExpandAll || !store.showCollapsable) {
+        this.expanded = true;
+      }
     }
+  
     if (!Array.isArray(this.data)) {
       markNodeData(this, this.data);
     }

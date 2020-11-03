@@ -54,6 +54,7 @@ Vue.use(Vue2OrgTree)
 | label-width | 节点的宽度，默认为自动宽度。如果 label-width 为 number 类型，单位 px；如果 label-width 为 string 类型，则这个宽度会设置为 节点 的 style.width 的值，节点的宽度会受控于外部样式 | string/number | — | —
 | label-height | 节点的高度，默认为自动高度。如果 label-height 为 number 类型，单位 px；如果 label-height 为 string 类型，则这个高度会设置为 节点 的 style.height 的值，节点的高度会受控于外部样式 | string/number | — | —
 | label-class-name | 节点 className 的回调方法，也可以使用字符串为所有的节点设置一个固定的 className | Function({node)/String | — | — 
+| currentLable-class-name | 当前选中节点的样式 | Function({node)/String | — | — 
 | show-collapsable | 节点是否可被展开 | Boolean | — | false
 | default-expand-all | 是否默认展开所有节点，该参数只有在 show-collapsable 为 true 时有效 | Boolean | — | false
 | render-content | 树节点的内容区的渲染 Function |  Function(h, node) | —  | —
@@ -75,6 +76,15 @@ Vue.use(Vue2OrgTree)
   node-click             |  节点被点击时的回调  | 共三个参数，依次为：传递给 data 属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身。
   node-expand         |  节点被展开时触发的事件  | 共三个参数，依次为：传递给 data 属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身
 node-contextmenu         |  当某一节点被鼠标右键点击时会触发该事件                      | 共四个参数，依次为：event、传递给 data 属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身。
+ getNode            |  根据 data 或者 key 拿到 Tree 组件中的 node  | (data) 要获得 node 的 key 或者 data
+ setCurrentNode            |  通过 node 设置某个节点的当前选中状态，使用此方法必须设置 node-key 属性  | (node) 待被选节点的 node
+ setCurrentKey            |  	通过 key 设置某个节点的当前选中状态，使用此方法必须设置 node-key 属性  | (key) 待被选节点的 key，若为 null 则取消当前高亮的节点
+ getCurrentKey            |  获取当前被选中节点的 key，使用此方法必须设置 node-key 属性，若没有节点被选中则返回 null  | —
+  getCurrentNode   |  	获取当前被选中节点的 data，若没有节点被选中则返回 null | —
+
+
+
+
 
 ### Call events
 

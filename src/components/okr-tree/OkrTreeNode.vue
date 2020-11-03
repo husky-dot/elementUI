@@ -15,7 +15,7 @@
       >
         <node-content :node="node" >
           <slot>
-            {{node.data.label}} {{ node.expanded}}
+            {{node.data.label}}
           </slot>
         </node-content>
       </div>
@@ -36,7 +36,6 @@
         :label-width="labelWidth"
         :label-height="labelHeight"
         :renderContent="renderContent"
-        :label-class-name="labelClassName"
         :selected-key="selectedKey"
         :node-key="nodeKey"
         :key="getNodeKey(child)"
@@ -62,14 +61,16 @@ export default {
       type: Boolean,
       default: false
     },
+    orkstyle: {
+      type: Boolean,
+      default: false
+    },
     // 树节点的内容区的渲染 Function
     renderContent: Function,
     // 树节点区域的宽度
     labelWidth: [String, Number],
     // 树节点区域的高度
     labelHeight: [String, Number],
-    // 树节点的样式
-    labelClassName: [Function, String],
     // 用来控制选择节点的字段名
     selectedKey: String,
     // 每个树节点用来作为唯一标识的属性，整棵树应该是唯一的
@@ -113,10 +114,16 @@ export default {
     },
     computeLabelClass () {
       let clsArr = []
-      if (typeof this.labelClassName === 'function'){
-        clsArr.push(this.labelClassName(this.node))
+      const store = this.tree.store;
+      if (typeof store.labelClassName === 'function'){
+        clsArr.push(store.labelClassName(this.node))
       } else {
-        clsArr.push(this.labelClassName)
+        clsArr.push(store.labelClassName)
+      }
+      if (typeof store.currentLableClassName === 'function'){
+        clsArr.push(store.currentLableClassName(this.node))
+      } else {
+        clsArr.push(store.currentLableClassName)
       }
       if (this.isCurrent) {
         clsArr.push('is-current')
@@ -144,7 +151,6 @@ export default {
     }
   },
   created () {
-
     const parent = this.$parent;
     if (parent.isTree) {
       this.tree = parent;
@@ -162,6 +168,8 @@ export default {
       return getNodeKey(this.nodeKey, node.data);
     },
     handleNodeClick (e) {
+      const store = this.tree.store;
+      store.setCurrentNode(this.node);
       this.tree.$emit('node-click', this.node.data, this.node, this);
     },
     handleBtnClick (e) {
@@ -180,6 +188,7 @@ export default {
       }
       this.tree.$emit('node-contextmenu', event, this.node.data, this.node, this);
     },
+    
   }
 }
 </script>
