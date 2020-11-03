@@ -1,11 +1,11 @@
 <template>
   <div>
-    <Vue2OrgTree :data='treeData' collapsable horizontal
+    <!-- <Vue2OrgTree :data='treeData' collapsable horizontal
       @on-expand="onExpand"
       selected-class-name="selected-node"
       selected-key="selectedKey"
       @on-node-click="onNodeClick"
-    />
+    /> -->
     <hr >
     <!-- <OkrTree :data="testData"
       direction='horizontal'
@@ -19,18 +19,22 @@
       node-key="id"
     ></OkrTree> -->
     <OkrTree :data="testData"
+      orkstyle
       direction='horizontal'
       @node-click='nodeClick'
       @node-expand='handleNodeExpand'
       @node-collapse='handleNodeCollapse'
+      @node-contextmenu="handleContextNenu"
+      :default-expand-all="true"
       label-width="100px"
       labelClassName='styleee'
       selected-key="selected"
       showCollapsable
       node-key="id"
       :default-expanded-keys='[7]'
+      
     ></OkrTree>
-    <OkrTree :data="treeData"
+    <!-- <OkrTree :data="treeData"
       direction='horizontal'
       @node-click='nodeClick'
       @node-expand='handleNodeExpand'
@@ -40,7 +44,7 @@
       selected-key="selected"
       showCollapsable
       node-key="id"
-    ></OkrTree>
+    ></OkrTree> -->
     <hr>
     <!-- 
     <OkrTree :data="testData"
@@ -89,56 +93,35 @@ export default {
         ]
       }
       ],
-      testData: [
-      {
+      testData: [{
         id: 1,
         label: '小三',
-        children: [
+        children: [{
+          id: 2,
+          label: '小2',
+          children: [
           {
-            id: 2,
-            label: '小2',
-            children: [
-              {
-                id: 3,
-                label: '小333',
-              },
-              {
-                id: 13,
-                label: '小333',
-              }
-            ]
-          }
-        ]
-      },
-      {
-        id: 4,
-        label: '小三小三小三小三小三小三小三小三',
-        children: [
+            id: 3,
+            label: '小333',
+          },
           {
-            id: 5,
-            label: '小4小三小三小三小三小三小三小三小三小三',
-            children: [
-              {
-                id: 6,
-                label: '小66666666666666',
-              },
-              {
-                id: 7,
-                label: '小4466',
-              },
-              {
-                id: 8,
-                label: '小4466',
-              },
-              {
-                id: 9,
-                label: '小4466',
-              }
-            ]
-          }
-        ]
-      }
-      ]
+            id: 13,
+            label: '小333',
+          }]
+        },{
+          id: 112,
+          label: '小112',
+          children: [
+          {
+            id: 113,
+            label: '小11333',
+          },
+          {
+            id: 1113,
+            label: '小11333',
+          }]
+        }]
+      }]
 
     }
   },
@@ -181,6 +164,12 @@ export default {
       console.log(node)
       console.log(instance)
     },
+    handleContextNenu (event, nodeData, node, instance) {
+      console.log(event)
+      console.log(nodeData)
+      console.log(node)
+      console.log(instance)
+    }
   }
 }
 </script>

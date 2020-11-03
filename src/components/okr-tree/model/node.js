@@ -58,6 +58,11 @@ export default class Node {
     if (key && defaultExpandedKeys && defaultExpandedKeys.indexOf(this.key) !== -1) {
       this.expand(null, true);
     }
+    
+    if (key && store.currentNodeKey !== undefined && this.key === store.currentNodeKey) {
+      store.currentNode = this;
+      store.currentNode.isCurrent = true;
+    }
 
     this.updateLeafState();
   }

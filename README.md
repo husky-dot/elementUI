@@ -57,18 +57,24 @@ Vue.use(Vue2OrgTree)
 | show-collapsable | 节点是否可被展开 | Boolean | — | false
 | default-expand-all | 是否默认展开所有节点，该参数只有在 show-collapsable 为 true 时有效 | Boolean | — | false
 | render-content | 树节点的内容区的渲染 Function |  Function(h, node) | —  | —
+| props | 配置选项，具体看下表 | object | —  | —
 | node-key | 每个树节点用来作为唯一标识的属性，整棵树应该是唯一的 | String | —  | —
 | default-expanded-keys | 默认展开的节点的 key 的数组(需要注意的是，此时必须设置node-key，其值为节点数据中的一个字段名，该字段在整棵树中是唯一的。) |  array |  — | —
 
+#### props
 
+| 参数 | 说明 | 类型 | 可选值 | 默认值
+| :-----| ---- | :----: | :----: |  :----: |
+| label | 指定节点标签为节点对象的某个属性值 |  	string, function(data, node) |  — | —
+| children | 指定节点标签为节点对象的某个属性值 | string |  — | —
 
-### Events
+#### Events
 
   事件名称        | 说明                            | 回调参数
   ------------------|-----------------------------------------|:----------------------
   node-click             |  节点被点击时的回调  | 共三个参数，依次为：传递给 data 属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身。
   node-expand         |  节点被展开时触发的事件  | 共三个参数，依次为：传递给 data 属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身
-  mouseout          |  onMouseOut event                       | `Function`
+node-contextmenu         |  当某一节点被鼠标右键点击时会触发该事件                      | 共四个参数，依次为：event、传递给 data 属性的数组中该节点所对应的对象、节点对应的 Node、节点组件本身。
 
 ### Call events
 

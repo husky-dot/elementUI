@@ -37,4 +37,12 @@ export default class TreeStore {
       if (node) node.expand(null, true);
     });
   }
+  setCurrentNode(currentNode) {
+    const prevCurrentNode = this.currentNode;
+    if (prevCurrentNode) {
+      prevCurrentNode.isCurrent = false;
+    }
+    this.currentNode = currentNode;
+    this.currentNode.isCurrent = true;
+  }
 }

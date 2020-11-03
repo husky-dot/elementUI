@@ -1,5 +1,6 @@
 <template>
   <div class="org-chart-node"
+    @contextmenu="($event) => this.handleContextMenu($event)"
     :class="{
         'collapsed': !node.expanded,
         'is-leaf': node.isLeaf,
@@ -171,7 +172,14 @@ export default {
         this.node.expand()
         this.tree.$emit('node-expand', this.node.data, this.node, this)
       }
-    }
+    },
+    handleContextMenu(event) {
+      if (this.tree._events['node-contextmenu'] && this.tree._events['node-contextmenu'].length > 0) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      this.tree.$emit('node-contextmenu', event, this.node.data, this.node, this);
+    },
   }
 }
 </script>

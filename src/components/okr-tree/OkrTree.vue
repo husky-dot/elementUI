@@ -68,6 +68,8 @@ export default {
       type: Boolean,
       default: false
     },
+    // 当前选中的节点
+    currentNodeKey: [String, Number],
     // 每个树节点用来作为唯一标识的属性，整棵树应该是唯一的
     nodeKey: String,
     defaultExpandedKeys: {
@@ -105,6 +107,7 @@ export default {
       props: this.props,
       defaultExpandedKeys: this.defaultExpandedKeys,
       showCollapsable: this.showCollapsable,
+      currentNodeKey: this.currentNodeKey,
       defaultExpandAll: this.defaultExpandAll,
       filterNodeMethod: this.filterNodeMethod
     })
