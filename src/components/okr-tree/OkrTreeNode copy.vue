@@ -2,37 +2,12 @@
   <div class="org-chart-node"
     @contextmenu="($event) => this.handleContextMenu($event)"
     :class="{
-        'collapsed': isLeftChildNode ? !node.leftExpanded : !node.expanded,
+        'collapsed': !node.expanded,
         'is-leaf': node.isLeaf,
         'is-current': node.isCurrent,
-        'is-left-child-node': isLeftChildNode,
-        'only-both-tree-node':node.level === 1 && tree.store.onlyBothTree
       }"
     >
-    <div class="org-chart-node-left-children"
-      v-if="showLeftChildNode"
-      :style="computLeftNodeStyle"
-      >
-      <OkrTreeNode
-        v-for="child in node.leftChildNodes"
-        :show-collapsable="showCollapsable"
-        :node="child"
-        :label-width="labelWidth"
-        :label-height="labelHeight"
-        :renderContent="renderContent"
-        :selected-key="selectedKey"
-        :node-key="nodeKey"
-        :key="getNodeKey(child)"
-        :props="props"
-        is-left-child-node
-      ></OkrTreeNode>
-    </div>
     <div class="org-chart-node-label">
-      <div v-if="showNodeBtn && node.leftChildNodes.length > 0"
-        class="org-chart-node-left-btn"
-        :class="{'expanded': node.leftExpanded}"
-        @click="handleBtnClick('left')"
-      ></div>
       <div class="org-chart-node-label-inner"
         @click="handleNodeClick"
         :class="computeLabelClass"
@@ -41,8 +16,6 @@
         <node-content :node="node" >
           <slot>
             {{node.data.label}}
-            {{showLeftChildNode}}
-            {{node.isLeftChild}}
           </slot>
         </node-content>
       </div>
@@ -52,7 +25,6 @@
         @click="handleBtnClick"
       ></div>
     </div>
-
     <div class="org-chart-node-children"
       v-if="node.childNodes && node.childNodes.length > 0"
       :style="computNodeStyle"
@@ -70,7 +42,23 @@
         :props="props"
       ></OkrTreeNode>
     </div>
-
+    <div class="org-chart-node-children"
+      v-if="node.childNodes && node.childNodes.length > 0"
+      :style="computNodeStyle"
+      >
+      <OkrTreeNode
+        v-for="child in node.childNodes"
+        :show-collapsable="showCollapsable"
+        :node="child"
+        :label-width="labelWidth"
+        :label-height="labelHeight"
+        :renderContent="renderContent"
+        :selected-key="selectedKey"
+        :node-key="nodeKey"
+        :key="getNodeKey(child)"
+        :props="props"
+      ></OkrTreeNode>
+    </div>
   </div>
 </template>
 <script>
@@ -91,11 +79,6 @@ export default {
       default: false
     },
     orkstyle: {
-      type: Boolean,
-      default: false
-    },
-    // 判断是否是左子树的节点，样式需要改
-    isLeftChildNode: {
       type: Boolean,
       default: false
     },
@@ -130,10 +113,6 @@ export default {
   computed: {
     // 是否显示展开按钮
     showNodeBtn () {
-      if (this.isLeftChildNode) {
-        return this.tree.store.direction === 'horizontal' && this.showCollapsable 
-        && this.node.leftChildNodes && this.node.leftChildNodes.length > 0
-      }
       return this.showCollapsable && this.node.childNodes && this.node.childNodes.length > 0
     },
     // 节点的宽度
@@ -168,27 +147,14 @@ export default {
       }
       return clsArr
     },
-    computLeftNodeStyle () {
-      return {
-        display: this.node.leftExpanded ? '' : 'none'
-      }
-    },
     computNodeStyle () {
-      let expanded = this.isLeftChildNode ? this.node.leftExpanded : this.node.expanded
       return {
-        display: expanded ? '' : 'none'
+        display: this.node.expanded ? '' : 'none'
       }
-    },
-    // 是否显示左子数
-    showLeftChildNode () {
-      return this.tree.store.direction === 'horizontal' && this.node.leftChildNodes && this.node.leftChildNodes.length > 0
     }
   },
   watch: {
     'node.expanded'(val) {
-      // this.$nextTick(() => this.expanded = val);
-    },
-    'node.leftExpanded'(val) {
       // this.$nextTick(() => this.expanded = val);
     }
   },
@@ -223,13 +189,12 @@ export default {
       store.setCurrentNode(this.node);
       this.tree.$emit('node-click', this.node.data, this.node, this);
     },
-    handleBtnClick (isLeftChild) {
-      let expanded = isLeftChild === 'left' ? this.node.leftExpanded : this.node.expanded
-      if (expanded) {
-        this.node.collapse(isLeftChild)
+    handleBtnClick (e) {
+      if (this.node.expanded) {
+        this.node.collapse()
         this.tree.$emit('node-collapse', this.node.data, this.node, this)
       } else {
-        this.node.expand(isLeftChild)
+        this.node.expand()
         this.tree.$emit('node-expand', this.node.data, this.node, this)
       }
     },

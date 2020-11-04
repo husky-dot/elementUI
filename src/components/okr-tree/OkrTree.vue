@@ -53,6 +53,11 @@ export default {
       type: Boolean,
       default: false
     },
+    // 飞书 OKR 模式
+    onlyBothTree: {
+      type: Boolean,
+      default: false
+    },
     orkstyle: {
       type: Boolean,
       default: false
@@ -84,6 +89,7 @@ export default {
     props: {
       default() {
         return {
+          leftChildren: 'leftChildren',
           children: 'children',
           label: 'label',
           disabled: 'disabled'
@@ -118,6 +124,8 @@ export default {
       filterNodeMethod: this.filterNodeMethod,
       labelClassName: this.labelClassName,
       currentLableClassName: this.currentLableClassName,
+      onlyBothTree: this.onlyBothTree,
+      direction: this.direction,
     })
     this.root = this.store.root;
     console.log(this.store)
@@ -325,10 +333,14 @@ export default {
 
 
 
-.horizontal .org-chart-node-children{
+.horizontal .org-chart-node-children,
+.horizontal .org-chart-node-left-children{
   position: relative;
   padding-left:20px;
   transition: all 0.5s;
+}
+.horizontal .org-chart-node-left-children{
+  padding-right: 20px;
 }
 .horizontal .org-chart-node{
   display: flex;
@@ -337,10 +349,13 @@ export default {
   padding: 0px 5px 0 20px;
   transition: all .5s;
 }
+.horizontal .is-left-child-node{
+  padding: 0px 20px 0 5px;
+}
 
 /*使用 ::before 和 ::after 绘制连接器*/
-.horizontal .org-chart-node::before,
-.horizontal .org-chart-node::after{
+.horizontal .org-chart-node:not(.is-left-child-node):before,
+.horizontal .org-chart-node:not(.is-left-child-node)::after{
   content: '';
   position: absolute;
   border-left: 1px solid #ccc;
@@ -349,10 +364,25 @@ export default {
   width: 20px;
   height: 50%;
 }
-.horizontal .org-chart-node::after{
+.horizontal .is-left-child-node:before,
+.horizontal .is-left-child-node::after{
+  content: '';
+  position: absolute;
+  border-right: 1px solid #ccc;
+  top:0;
+  right: 0;
+  width: 20px;
+  height: 50%;
+}
+.horizontal .org-chart-node:not(.is-left-child-node):after{
   top: 50%;
   border-top: 1px solid #ccc;
 }
+.horizontal .is-left-child-node:after{
+  top: 50%;
+  border-top: 1px solid  #ccc;
+}
+
 
 /*我们需要从没有任何兄弟元素的元素中删除左右连接器*/
 .horizontal.one-branch > .org-chart-node::after,
@@ -370,17 +400,27 @@ export default {
   border: 0 none;
 }
 /*将垂直连接器添加回最后的节点*/
-.horizontal .org-chart-node:last-child::before{
+.horizontal .org-chart-node:not(.is-left-child-node):last-child::before{
   border-bottom: 1px solid #ccc;
   border-radius: 0 0px 0 5px;
 }
+.horizontal .is-left-child-node:last-child::before{
+  border-bottom: 1px solid #ccc;
+  border-radius: 0 0px 5px 0px;
+}
+
 .horizontal .org-chart-node:only-child::before{
   border-radius: 0 0px 0 0px;
 }
 
-.horizontal .org-chart-node:first-child::after{
+.horizontal .org-chart-node:not(.is-left-child-node):first-child::after{
   border-radius: 5px 0px 0 0;
 }
+.horizontal .is-left-child-node:first-child::after{
+  border-radius: 0 5px 10px 0px;
+}
+
+
 .horizontal .org-chart-node.is-leaf{
   position: relative;
   padding-left: 20px;
@@ -395,8 +435,31 @@ export default {
 }
 
 
+.horizontal .is-left-child-node:last-child::after{
+  /* border-bottom: 1px solid green; */
+  border-radius: 0 0px 5px 0px;
+}
+.horizontal .is-left-child-node:only-child::after{
+  border-radius: 0 0px 0 0px;
+}
+
+.horizontal .is-left-child-node.is-leaf{
+  position: relative;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.horizontal .is-left-child-node.is-leaf::before{
+  content: '';
+  display: block;
+}
+.horizontal .is-left-child-node .org-chart-node-label::after{
+  display: none;
+}
+
+
 /*从父节点添加向下的连接器了*/
-.horizontal .org-chart-node-children::before{
+.horizontal .org-chart-node-children::before,
+.horizontal .org-chart-node-left-children::before{
   content: '';
   position: absolute;
   left:0;
@@ -405,6 +468,10 @@ export default {
   width: 20px;
   height: 0;
 }
+.horizontal .org-chart-node-left-children::before{
+  left: 90%;
+}
+
 .horizontal .org-chart-node-label{
   position: relative;
   display: inline-block;
@@ -439,17 +506,21 @@ export default {
   transition: all .35s ease;
 }
 
-.horizontal .org-chart-node-label .org-chart-node-btn:hover{
+.horizontal .org-chart-node-label .org-chart-node-btn:hover,
+.horizontal .org-chart-node-label .org-chart-node-left-btn:hover{
   background-color: #e7e8e9;
   transform: scale(1.15);
 }
 .horizontal .org-chart-node-label .org-chart-node-btn::before,
-.horizontal .org-chart-node-label .org-chart-node-btn::after {
+.horizontal .org-chart-node-label .org-chart-node-btn::after,
+.horizontal .org-chart-node-label .org-chart-node-left-btn::before,
+.horizontal .org-chart-node-label .org-chart-node-left-btn::after {
   content: '';
   position: absolute;
 }
 
-.horizontal .org-chart-node-label .org-chart-node-btn::before{
+.horizontal .org-chart-node-label .org-chart-node-btn::before,
+.horizontal .org-chart-node-label .org-chart-node-left-btn::before{
   top: 50%;
   left: 4px;
   right: 3px;
@@ -457,16 +528,36 @@ export default {
   height: 0;
   transform: translateY(-50%);
 }
-.horizontal .org-chart-node-label .org-chart-node-btn::after{
+.horizontal .org-chart-node-label .org-chart-node-btn::after,
+.horizontal .org-chart-node-label .org-chart-node-left-btn::after{
   top: 4px;
   left: 50%;
   bottom: 4px;
   width: 0;
   border-left: 1px solid #ccc;
 }
-.horizontal .org-chart-node-label .expanded.org-chart-node-btn::after{
+.horizontal .org-chart-node-label .expanded.org-chart-node-btn::after,
+.horizontal .org-chart-node-label .expanded.org-chart-node-left-btn::after{
   display: none;
 }
+
+.horizontal .org-chart-node-label .org-chart-node-left-btn{
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  z-index: 10;
+  margin-top: -11px;
+  margin-right: 9px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  box-shadow: 0 0 2px rgba(0, 0, 0, .15);
+  cursor: pointer;
+  transition: all .35s ease;
+}
+
 
 .horizontal .org-chart-node.collapsed .org-chart-node-label{
   position: relative;
@@ -477,6 +568,15 @@ export default {
   position: absolute;
   top:0;
   left: 100%;
+  height: 50%;
+  width: 20px;
+}
+.horizontal .only-both-tree-node > .org-chart-node-label::before{
+  content: '';
+  border-bottom: 1px solid #ccc;
+  position: absolute;
+  top:0;
+  right: 100%;
   height: 50%;
   width: 20px;
 }

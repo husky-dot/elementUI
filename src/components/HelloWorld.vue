@@ -18,26 +18,28 @@
       :default-expand-all='true'
       node-key="id"
     ></OkrTree> -->
+    <div style="padding-left:300px">
     <OkrTree :data="testData"
-      orkstyle
       ref="tree"
+      onlyBothTree
       direction='horizontal'
       @node-click='nodeClick'
       @node-expand='handleNodeExpand'
       @node-collapse='handleNodeCollapse'
       @node-contextmenu="handleContextNenu"
-      :default-expand-all="true"
       label-width="100px"
       :labelClassName='rednerLabelClass'
       currentLableClassName="xiohong"
       selected-key="selected"
       showCollapsable
       node-key="id"
-      :default-expanded-keys='[7]'
-      
+      :default-expanded-keys='[3]'
     ></OkrTree>
-    <!-- <OkrTree :data="treeData"
-      direction='horizontal'
+
+    </div>
+<!-- 
+    <OkrTree :data="testData2"
+      onlyBothTree
       @node-click='nodeClick'
       @node-expand='handleNodeExpand'
       @node-collapse='handleNodeCollapse'
@@ -110,18 +112,46 @@ export default {
             id: 13,
             label: '小333',
           }]
-        },{
+        }, {
           id: 112,
-          label: '小112',
+          label: '小21111',
+          children: [
+            {
+                id: 1123,
+              label: '小21113331',
+            }
+          ]
+        }],
+        leftChildren: [{
+          id: 144,
+          label: '王智艺3333333222',
+          leftChildren: [{
+            id: 5555,
+            label: '王智艺33333333339999',
+          }]
+        },{
+          id: 154,
+          label: '小555555'
+        }]
+      }],
+      testData2: [{
+        id: 1,
+        label: '小三',
+        children: [{
+          id: 2,
+          label: '小2',
           children: [
           {
-            id: 113,
-            label: '小11333',
+            id: 3,
+            label: '小333',
           },
           {
-            id: 1113,
-            label: '小1133339933',
+            id: 13,
+            label: '小333',
           }]
+        }, {
+          id: 112,
+          label: '小21111',
         }]
       }]
 

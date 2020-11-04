@@ -34,15 +34,8 @@ export default class TreeStore {
     this.defaultExpandedKeys = keys;
     keys.forEach((key) => {
       const node = this.getNode(key);
-      let isLeftChild = node.isLeftChild
-      if (node && !isLeftChild) node.expand('', null, true);
-      if (node && isLeftChild) node.expand('left', null, true);  
+      if (node) node.expand(null, true);
     });
-  }
-    // 是否是 OKR 飞书模式
-  hasLeftChild () {
-    const store = this.store
-    return store.onlyBothTree && store.direction === 'horizontal'
   }
   setCurrentNode(currentNode) {
     const prevCurrentNode = this.currentNode;
