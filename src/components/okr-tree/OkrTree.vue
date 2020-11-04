@@ -113,6 +113,8 @@ export default {
   },
   created () {
     this.isTree = true;
+    console.log('构造构造构造构造构造构造构造构造构造构造构造构造构造构造构造构造构造')
+    console.log(this.data)
     this.store = new TreeStore({
       key: this.nodeKey,
       data: this.data,

@@ -4,8 +4,9 @@ export default class TreeStore {
   constructor(options) {
     this.currentNode = null;
     this.currentNodeKey = null;
-
-    for (let option in options) {
+    console.log('第0次第0次第0次第0次第0次第0次第0次第0次v')
+    console.log(options)
+    for (let option in options) { 
       if (options.hasOwnProperty(option)) {
         this[option] = options[option];
       }

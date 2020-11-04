@@ -102,7 +102,7 @@ export default {
         label: '小三',
         children: [{
           id: 2,
-          label: '小2',
+          label: '小22222',
           children: [
           {
             id: 3,
