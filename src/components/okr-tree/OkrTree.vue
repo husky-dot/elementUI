@@ -10,6 +10,7 @@
       <OkrTreeNode 
         v-for="child in root.childNodes"
         :node="child"
+        :root="root"
         orkstyle
         :show-collapsable="showCollapsable"
         :label-width="labelWidth"
@@ -42,6 +43,9 @@ export default {
   props: {
     data: { // 源数据
       required: true,
+    },
+    leftData: { // 源数据
+      type: Array
     },
     // 方向
     direction: {
@@ -113,11 +117,10 @@ export default {
   },
   created () {
     this.isTree = true;
-    console.log('构造构造构造构造构造构造构造构造构造构造构造构造构造构造构造构造构造')
-    console.log(this.data)
     this.store = new TreeStore({
       key: this.nodeKey,
       data: this.data,
+      leftData: this.leftData,
       props: this.props,
       defaultExpandedKeys: this.defaultExpandedKeys,
       showCollapsable: this.showCollapsable,
@@ -130,7 +133,7 @@ export default {
       direction: this.direction,
     })
     this.root = this.store.root;
-    console.log(this.store)
+    console.log('开始打印。。。。。。。。。。。。')
     console.log(this.root)
   },
   watch: {
@@ -344,12 +347,18 @@ export default {
 .horizontal .org-chart-node-left-children{
   padding-right: 20px;
 }
-.horizontal .org-chart-node{
+.horizontal .org-chart-node:not(.is-left-child-node){
   display: flex;
   align-items: center;
   position: relative;
   padding: 0px 5px 0 20px;
   transition: all .5s;
+}
+.horizontal .is-left-child-node{
+  display: flex;
+  position: relative;
+  justify-content: flex-end;
+  align-items: center;
 }
 .horizontal .is-left-child-node{
   padding: 0px 20px 0 5px;
@@ -411,15 +420,17 @@ export default {
   border-radius: 0 0px 5px 0px;
 }
 
-.horizontal .org-chart-node:only-child::before{
+.horizontal .org-chart-node:only-child::before
+{
   border-radius: 0 0px 0 0px;
+  border-color: #ccc;
 }
 
 .horizontal .org-chart-node:not(.is-left-child-node):first-child::after{
   border-radius: 5px 0px 0 0;
 }
 .horizontal .is-left-child-node:first-child::after{
-  border-radius: 0 5px 10px 0px;
+  border-radius: 0 5px 0px 0px;
 }
 
 
@@ -432,7 +443,8 @@ export default {
   content: '';
   display: block;
 }
-.horizontal .org-chart-node.is-leaf .org-chart-node-label::after{
+.horizontal .org-chart-node.is-leaf .org-chart-node-label::after,
+.horizontal .is-left-child-node.is-leaf .org-chart-node-label::before{
   display: none;
 }
 
@@ -461,17 +473,17 @@ export default {
 
 /*从父节点添加向下的连接器了*/
 .horizontal .org-chart-node-children::before,
-.horizontal .org-chart-node-left-children::before{
+.horizontal .org-chart-node-left-children::after{
   content: '';
   position: absolute;
   left:0;
   top: 50%;
   border-top: 1px solid #ccc;
-  width: 20px;
+  width: 10px;
   height: 0;
 }
-.horizontal .org-chart-node-left-children::before{
-  left: 90%;
+.horizontal .org-chart-node-left-children::after{
+  left: 95%;
 }
 
 .horizontal .org-chart-node-label{
@@ -561,17 +573,22 @@ export default {
 }
 
 
-.horizontal .org-chart-node.collapsed .org-chart-node-label{
+.horizontal .org-chart-node.collapsed .org-chart-node-label,
+.horizontal .is-left-child-node.collapsed .org-chart-node-label{
   position: relative;
 }
-.horizontal .org-chart-node.collapsed .org-chart-node-label::after{
+.horizontal .org-chart-node.collapsed .org-chart-node-label::after,
+.horizontal .is-left-child-node.collapsed .org-chart-node-label::before{
   content: '';
   border-bottom: 1px solid #ccc;
   position: absolute;
   top:0;
   left: 100%;
   height: 50%;
-  width: 20px;
+  width: 10px;
+}
+.horizontal .is-left-child-node.collapsed .org-chart-node-label::before{
+  left: -10px;
 }
 .horizontal .only-both-tree-node > .org-chart-node-label::before{
   content: '';

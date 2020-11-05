@@ -20,6 +20,7 @@
     ></OkrTree> -->
     <div style="padding-left:300px">
     <OkrTree :data="testData"
+      :leftData="testLeftData"
       ref="tree"
       onlyBothTree
       direction='horizontal'
@@ -33,13 +34,11 @@
       selected-key="selected"
       showCollapsable
       node-key="id"
-      :default-expanded-keys='[3]'
     ></OkrTree>
 
     </div>
-<!-- 
-    <OkrTree :data="testData2"
-      onlyBothTree
+
+    <!-- <OkrTree :data="testData2"
       @node-click='nodeClick'
       @node-expand='handleNodeExpand'
       @node-collapse='handleNodeCollapse'
@@ -98,40 +97,51 @@ export default {
       }
       ],
       testData: [{
-        id: 1,
+        id: 111,
         label: '小三',
         children: [{
-          id: 2,
+          id: 1112,
           label: '小22222',
           children: [
           {
-            id: 3,
+            id: 1113,
             label: '小333',
           },
           {
-            id: 13,
+            id: 11113,
             label: '小333',
           }]
         }, {
-          id: 112,
+          id: 111112,
           label: '小21111',
           children: [
             {
-                id: 1123,
-              label: '小21113331',
+              id: 111123,
+              label: '小智真6',
             }
           ]
-        }],
-        leftChildren: [{
-          id: 144,
-          label: '王智艺3333333222',
-          leftChildren: [{
-            id: 5555,
-            label: '王智艺33333333339999',
-          }]
-        },{
-          id: 154,
-          label: '小555555'
+        }]
+      }],
+      testLeftData: [{
+        id: 1,
+        label: '小三',
+        children: [{
+          id: 1111112,
+          label: '小Left1',
+          children: []
+        }, {
+          id: 1111114,
+          label: '小Left4',
+          children: [
+            {
+              id: 1111115,
+              label: '小Left5',
+            },
+            {
+              id: 11111116,
+              label: '小Left6',
+            }
+          ]
         }]
       }],
       testData2: [{

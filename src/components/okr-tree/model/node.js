@@ -19,18 +19,16 @@ const getPropertyFromData = function(node, prop) {
 let nodeIdSeed = 0;
 
 export default class Node {
-  constructor(options) {
+  constructor(options, isLeftChild = false) {
+    this.isLeftChild = isLeftChild
     this.id = nodeIdSeed++;
     this.data = null;
     this.expanded = false;
     this.leftExpanded = false;
     this.isCurrent = false;
     this.parent = null;
-
     for (let name in options) {
       if (options.hasOwnProperty(name)) {
-        console.log(name)
-        console.log(options[name])
         this[name] = options[name];
       }
     }
@@ -48,9 +46,7 @@ export default class Node {
     }
     store.registerNode(this);
     if (this.data) {
-      console.log('第一次第一次第一次第一次第一次第一次第一次第一次第一次第一次第一次第一次第一次第一次第一次')
-      console.log(this.data)
-      this.setData(this.data)
+      this.setData(this.data, isLeftChild)
       if (store.defaultExpandAll || !store.showCollapsable) {
         this.expanded = true;
         this.leftExpanded = true;
@@ -61,13 +57,12 @@ export default class Node {
       markNodeData(this, this.data);
     }
     if (!this.data) return;
-    const defaultExpandedKeys = store.defaultExpandedKeys;
+    const defaultExpandedKeys = store.defaultExpandedKeys
     const key = store.key;
     if (key && defaultExpandedKeys && defaultExpandedKeys.indexOf(this.key) !== -1) {
-      this.expand('', null, true)
-      if (this.hasLeftChild()) {
-        this.expand('left', null, true)
-      }
+      console.log('找到了。。。。。。。。。。。。。。。。。。。')
+      console.log(this)
+      this.expand(null, true)
     }
     
     if (key && store.currentNodeKey !== undefined && this.key === store.currentNodeKey) {
@@ -78,25 +73,21 @@ export default class Node {
     this.updateLeafState();
   }
 
-  setData(data) {
+  setData(data, isLeftChild) {
     if (!Array.isArray(data)) {
       markNodeData(this, data);
     }
     const store = this.store;
     this.data = data;
     this.childNodes = [];
-    this.leftChildNodes = [];
-
     let children;
-    let leftChildren;
-
     if (this.level === 0 && this.data instanceof Array) {
       children = this.data
     } else {
       children = getPropertyFromData(this, 'children') || [];
     }
     for (let i = 0, j = children.length; i < j; i++) {
-      this.insertChild({ data: children[i] });
+      this.insertChild({ data: children[i] }, null, null, isLeftChild);
     }
   }
   get key() {
@@ -112,13 +103,10 @@ export default class Node {
     const store = this.store
     return store.onlyBothTree && store.direction === 'horizontal'
   }
-  insertChild(child, index, batch) {
+  insertChild(child, index, batch, isLeftChild) {
     if (!child) throw new Error('insertChild error: child is required.');
     if (!(child instanceof Node)) {
       if (!batch) {
-        console.log('insertChildinsertChildinsertChildinsertChildvvv')
-        console.log(child)
-        console.log(this.data)
         const children = this.getChildren(true);
         if (children.indexOf(child.data) === -1) {
           if (typeof index === 'undefined' || index < 0) {
@@ -128,17 +116,12 @@ export default class Node {
           }
         }
       }
-      console.log('childchildchildchildchildchildchildchildchildchildchild')
-      console.log(child)
       objectAssign(child, {
         parent: this,
         store: this.store
       });
-      child = new Node(child);
-      console.log('childNodechildNodechildNodechildNodechildNodechildNodechildNodechildNodechildNodechildNodechildNode')
-      console.log(child)
+      child = new Node(child, isLeftChild);
     }
-
     child.level = this.level + 1;
     if (typeof index === 'undefined' || index < 0) {
       this.childNodes.push(child)
@@ -193,24 +176,20 @@ export default class Node {
     this.isLeaf = false;
   }
   // 节点的收起
-  collapse (isLeftChild) {
-    isLeftChild === 'left' ? this.leftExpanded = false : this.expanded = false;
-    console.log('3333333333333333333333')
-    console.log(isLeftChild)
-    console.log(this.leftExpanded)
+  collapse () {
+    this.expanded = false
   }
   // 节点的展开
-  expand (isLeftChild, callback, expandParent) {
-    isLeftChild = isLeftChild === 'left'
+  expand (callback, expandParent) {
     const done = () => {
       if (expandParent) {
         let parent = this.parent;
         while (parent.level > 0) {
-          isLeftChild ? parent.leftExpanded = true : parent.expanded = true
+          parent.isLeftChild ?  parent.leftExpanded = true : parent.expanded = true;
           parent = parent.parent;
         }
       }
-      isLeftChild ? this.leftExpanded = true : this.expanded = true
+      this.isLeftChild ? this.leftExpanded = true : this.expanded = true;
       if (callback) callback();
     };
     done()

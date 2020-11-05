@@ -2,7 +2,7 @@
   <div class="org-chart-node"
     @contextmenu="($event) => this.handleContextMenu($event)"
     :class="{
-        'collapsed': isLeftChildNode ? !node.leftExpanded : !node.expanded,
+        'collapsed': !node.leftExpanded || !node.expanded,
         'is-leaf': node.isLeaf,
         'is-current': node.isCurrent,
         'is-left-child-node': isLeftChildNode,
@@ -14,7 +14,7 @@
       :style="computLeftNodeStyle"
       >
       <OkrTreeNode
-        v-for="child in node.leftChildNodes"
+        v-for="child in leftChildNodes"
         :show-collapsable="showCollapsable"
         :node="child"
         :label-width="labelWidth"
@@ -28,7 +28,7 @@
       ></OkrTreeNode>
     </div>
     <div class="org-chart-node-label">
-      <div v-if="showNodeBtn && node.leftChildNodes.length > 0"
+      <div v-if="showNodeBtn && leftChildNodes.length > 0"
         class="org-chart-node-left-btn"
         :class="{'expanded': node.leftExpanded}"
         @click="handleBtnClick('left')"
@@ -41,20 +41,21 @@
         <node-content :node="node" >
           <slot>
             {{node.data.label}}
-            {{showLeftChildNode}}
-            {{node.isLeftChild}}
+            {{leftChildNodes.length}}
+            {{node.expanded}}
+            {{node.leftExpanded}}
           </slot>
         </node-content>
       </div>
-      <div v-if="showNodeBtn"
+      <div v-if="showNodeBtn && !isLeftChildNode "
         class="org-chart-node-btn"
         :class="{'expanded': node.expanded}"
-        @click="handleBtnClick"
+        @click="handleBtnClick('right')"
       ></div>
     </div>
 
     <div class="org-chart-node-children"
-      v-if="node.childNodes && node.childNodes.length > 0"
+      v-if="!isLeftChildNode && node.childNodes && node.childNodes.length > 0"
       :style="computNodeStyle"
       >
       <OkrTreeNode
@@ -85,12 +86,13 @@ export default {
         return {};
       }
     },
+    root: {
+      default() {
+        return {};
+      }
+    },
     // 子节点是否可折叠
     showCollapsable: {
-      type: Boolean,
-      default: false
-    },
-    orkstyle: {
       type: Boolean,
       default: false
     },
@@ -128,11 +130,20 @@ export default {
     }
   },
   computed: {
+    leftChildNodes () {
+      if (this.tree.store.onlyBothTree) {
+        if (this.isLeftChildNode) {
+          return this.node.childNodes
+        } else {
+          return this.node.leftChildNodes
+        }
+      }
+      return []
+    },
     // 是否显示展开按钮
     showNodeBtn () {
       if (this.isLeftChildNode) {
-        return this.tree.store.direction === 'horizontal' && this.showCollapsable 
-        && this.node.leftChildNodes && this.node.leftChildNodes.length > 0
+        return this.tree.store.direction === 'horizontal' && this.showCollapsable  && this.leftChildNodes.length > 0
       }
       return this.showCollapsable && this.node.childNodes && this.node.childNodes.length > 0
     },
@@ -168,20 +179,19 @@ export default {
       }
       return clsArr
     },
+    computNodeStyle () {
+      return {
+        display: this.node.expanded ? '' : 'none'
+      }
+    },
     computLeftNodeStyle () {
       return {
         display: this.node.leftExpanded ? '' : 'none'
       }
     },
-    computNodeStyle () {
-      let expanded = this.isLeftChildNode ? this.node.leftExpanded : this.node.expanded
-      return {
-        display: expanded ? '' : 'none'
-      }
-    },
     // 是否显示左子数
     showLeftChildNode () {
-      return this.tree.store.direction === 'horizontal' && this.node.leftChildNodes && this.node.leftChildNodes.length > 0
+      return this.tree.onlyBothTree && this.tree.store.direction === 'horizontal' && this.leftChildNodes && this.leftChildNodes.length > 0
     }
   },
   watch: {
@@ -223,13 +233,29 @@ export default {
       store.setCurrentNode(this.node);
       this.tree.$emit('node-click', this.node.data, this.node, this);
     },
-    handleBtnClick (isLeftChild) {
-      let expanded = isLeftChild === 'left' ? this.node.leftExpanded : this.node.expanded
-      if (expanded) {
-        this.node.collapse(isLeftChild)
+    handleBtnClick (isLeft) {
+      console.log(this.node.level)
+      console.log(isLeft)
+      isLeft = isLeft === 'left'
+      const store = this.tree.store;
+      // 表示是OKR飞书模式
+      if ( store.onlyBothTree) {
+        if (isLeft) {
+          if (this.node.leftExpanded) {
+            this.node.leftExpanded = false
+            this.tree.$emit('node-collapse', this.node.data, this.node, this)
+          } else {
+            this.node.leftExpanded = true
+            this.tree.$emit('node-expand', this.node.data, this.node, this)
+          }
+          return 
+        }
+      }
+      if (this.node.expanded) {
+        this.node.collapse()
         this.tree.$emit('node-collapse', this.node.data, this.node, this)
       } else {
-        this.node.expand(isLeftChild)
+        this.node.expand()
         this.tree.$emit('node-expand', this.node.data, this.node, this)
       }
     },

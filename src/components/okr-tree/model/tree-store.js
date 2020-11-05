@@ -4,8 +4,7 @@ export default class TreeStore {
   constructor(options) {
     this.currentNode = null;
     this.currentNodeKey = null;
-    console.log('第0次第0次第0次第0次第0次第0次第0次第0次v')
-    console.log(options)
+
     for (let option in options) { 
       if (options.hasOwnProperty(option)) {
         this[option] = options[option];
@@ -15,7 +14,23 @@ export default class TreeStore {
     this.root = new Node({
       data: this.data,
       store: this
-    });
+    }, false)
+
+    if (this.root.store.onlyBothTree) {
+      if (!this.leftData) throw new Error('[Tree] leftData is required in onlyBothTree')
+      if (this.leftData) {
+        this.isLeftChilds = new Node({
+          data: this.leftData,
+          store: this
+        }, true)
+        console.log('垃圾垃圾垃圾垃圾垃圾垃圾垃圾垃圾垃圾垃圾垃圾')
+        console.log(this.isLeftChilds)
+        if (this.isLeftChilds) {
+          this.root.childNodes[0].leftChildNodes = this.isLeftChilds.childNodes[0].childNodes
+          this.root.childNodes[0].leftExpanded = this.isLeftChilds.childNodes[0].leftExpanded
+        }
+      }
+    }
   }
 
   registerNode(node) {
@@ -32,18 +47,11 @@ export default class TreeStore {
   }
   setDefaultExpandedKeys(keys) {
     keys = keys || [];
-    this.defaultExpandedKeys = keys;
+    this.defaultExpandedKeys = keys
     keys.forEach((key) => {
-      const node = this.getNode(key);
-      let isLeftChild = node.isLeftChild
-      if (node && !isLeftChild) node.expand('', null, true);
-      if (node && isLeftChild) node.expand('left', null, true);  
+      const node = this.getNode(key)
+      if (node) node.expand(null, true)
     });
-  }
-    // 是否是 OKR 飞书模式
-  hasLeftChild () {
-    const store = this.store
-    return store.onlyBothTree && store.direction === 'horizontal'
   }
   setCurrentNode(currentNode) {
     const prevCurrentNode = this.currentNode;
