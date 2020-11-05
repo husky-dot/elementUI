@@ -84,6 +84,7 @@ node-contextmenu         |  当某一节点被鼠标右键点击时会触发该�
   getCurrentNode   |  	获取当前被选中节点的 data，若没有节点被选中则返回 null | —
 
 
+yy
 
 
 
