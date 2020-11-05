@@ -60,8 +60,6 @@ export default class Node {
     const defaultExpandedKeys = store.defaultExpandedKeys
     const key = store.key;
     if (key && defaultExpandedKeys && defaultExpandedKeys.indexOf(this.key) !== -1) {
-      console.log('找到了。。。。。。。。。。。。。。。。。。。')
-      console.log(this)
       this.expand(null, true)
     }
     

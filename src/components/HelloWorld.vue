@@ -28,17 +28,18 @@
       @node-expand='handleNodeExpand'
       @node-collapse='handleNodeCollapse'
       @node-contextmenu="handleContextNenu"
-      label-width="100px"
+      label-width="140px"
       :labelClassName='rednerLabelClass'
       currentLableClassName="xiohong"
       selected-key="selected"
       showCollapsable
       node-key="id"
+      :render-content="renderContent"
     ></OkrTree>
 
     </div>
 
-    <!-- <OkrTree :data="testData2"
+    <OkrTree :data="testData2"
       @node-click='nodeClick'
       @node-expand='handleNodeExpand'
       @node-collapse='handleNodeCollapse'
@@ -47,8 +48,25 @@
       selected-key="selected"
       showCollapsable
       node-key="id"
-    ></OkrTree> -->
+      :default-expand-all='true'
+    ></OkrTree>
     <hr>
+
+    <div>
+        <OkrTree :data="testData2"
+      @node-click='nodeClick'
+      @node-expand='handleNodeExpand'
+      @node-collapse='handleNodeCollapse'
+      direction='horizontal'
+      label-width="100px"
+      labelClassName='styleee'
+      selected-key="selected"
+      showCollapsable
+      node-key="id"
+      :default-expand-all='true'
+    ></OkrTree>
+    
+    </div>
     <!-- 
     <OkrTree :data="testData"
       @node-click='nodeClick'
@@ -186,6 +204,16 @@ export default {
       }
     },
     renderContent (h, data) {
+
+      const { isLeftChild } = data
+      console.log(isLeftChild)
+      if (isLeftChild) {
+        return (
+          <div class="render-wrapper" >
+            <h1 style={{color: 'red'}}>{data.label}</h1>
+          </div>
+        )
+      }
       return (
         <div class="render-wrapper">
           <h1>{data.label}</h1>

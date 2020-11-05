@@ -133,8 +133,6 @@ export default {
       direction: this.direction,
     })
     this.root = this.store.root;
-    console.log('开始打印。。。。。。。。。。。。')
-    console.log(this.root)
   },
   watch: {
     defaultExpandedKeys(newVal) {
@@ -144,7 +142,6 @@ export default {
   },
   methods: {
     getNodeKey(node) {
-      console.log(getNodeKey(this.nodeKey, node.data))
       return getNodeKey(this.nodeKey, node.data);
     },
     // 通过 node 设置某个节点的当前选中状态

@@ -23,8 +23,6 @@ export default class TreeStore {
           data: this.leftData,
           store: this
         }, true)
-        console.log('垃圾垃圾垃圾垃圾垃圾垃圾垃圾垃圾垃圾垃圾垃圾')
-        console.log(this.isLeftChilds)
         if (this.isLeftChilds) {
           this.root.childNodes[0].leftChildNodes = this.isLeftChilds.childNodes[0].childNodes
           this.root.childNodes[0].leftExpanded = this.isLeftChilds.childNodes[0].leftExpanded
