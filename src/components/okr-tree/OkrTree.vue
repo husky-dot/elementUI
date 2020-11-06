@@ -276,6 +276,7 @@ export default {
 }
 .vertical .org-chart-node-label .org-chart-node-label-inner:hover{
   background: #eeeeee;
+  cursor: pointer;
 }
 .vertical .org-chart-node-label .org-chart-node-btn{
   position: absolute;
@@ -296,6 +297,7 @@ export default {
 .vertical .org-chart-node-label .org-chart-node-btn:hover{
   background-color: #e7e8e9;
   transform: scale(1.15);
+    cursor: pointer;
 }
 .vertical .org-chart-node-label .org-chart-node-btn::before,
 .vertical .org-chart-node-label .org-chart-node-btn::after {
@@ -476,11 +478,11 @@ export default {
   left:0;
   top: 50%;
   border-top: 1px solid #ccc;
-  width: 10px;
+  width: 20px;
   height: 0;
 }
 .horizontal .org-chart-node-left-children::after{
-  left: 95%;
+  left: 90%;
 }
 
 .horizontal .org-chart-node-label{
@@ -499,6 +501,7 @@ export default {
 
 .horizontal .org-chart-node-label .org-chart-node-label-inner:hover{
   background: #eeeeee;
+  cursor: pointer;
 }
 .horizontal .org-chart-node-label .org-chart-node-btn{
   position: absolute;

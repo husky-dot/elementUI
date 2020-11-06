@@ -61,7 +61,6 @@
       label-width="100px"
       labelClassName='styleee'
       selected-key="selected"
-      showCollapsable
       node-key="id"
       :default-expand-all='true'
     ></OkrTree>
